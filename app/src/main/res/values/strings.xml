@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Remember The Date</string>
+    <string name="title_section1">Dates</string>
+    <string name="title_section2">Help</string>
+    <string name="action_add">Add</string>
+    <string name="action_profile">Your Profile</string>
+    <string name="title_activity_create_date">Create or Change a Date</string>
+    <string name="action_save">Save</string>
+    <string name="title_activity_create_profile">Profile</string>
+    <string name="action_edit">Edit</string>
+    <string name="title_activity_profile">Your Profile</string>
+    <string name="fragment_create_date_title_hint">Title of your date</string>
+    <string name="fragment_create_profile_name_hint">Name</string>
+    <string name="fragment_create_profile_email_hint">Email</string>
+    <string name="fragment_date_no_items">No items to show.</string>
+    <string name="fragment_profile_username">User name</string>
+    <string name="fragment_profile_email_address">Email address</string>
+    <string name="fragment_main_header">View our Help Center, create a ticket or manage your existing tickets</string>
+    <string name="fragment_main_btn_knowledge_base">Knowledge base</string>
+    <string name="fragment_main_btn_contact_us">Contact us</string>
+    <string name="fragment_main_btn_my_tickets">My tickets</string>
+    <string name="fragment_main_btn_rate_the_app">Rate the app</string>
+
+</resources>

@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.zendesk.rememberthedate.ui.CreateDateActivity">
+    <item android:id="@+id/action_save" android:title="@string/action_save"
+        android:orderInCategory="100" app:showAsAction="always" />
+</menu>
