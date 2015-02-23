@@ -4,6 +4,10 @@
     <style name="AppTheme" parent="ZendeskSdkTheme.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/RedActionBar</item>
 
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorSecondary</item>
+
         <item name="RateMyAppPaddingTop">@dimen/rma_padding_top</item>
         <item name="RateMyAppPaddingBottom">@dimen/rma_padding_bottom</item>
 
