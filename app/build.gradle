@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "20.0.0"
+    buildToolsVersion "21.1.2"
     defaultConfig {
         applicationId "com.zendesk.rememberthedate"
         minSdkVersion 15
@@ -12,7 +12,7 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -22,6 +22,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v13:21.0.0'
-    compile group: 'com.zendesk', name: 'sdk', version: '1.0.0.1'
+    compile 'com.android.support:support-v13:21.0.3'
+    compile group: 'com.zendesk', name: 'sdk', version: '1.1.0.1'
 }

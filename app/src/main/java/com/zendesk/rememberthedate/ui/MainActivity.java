@@ -3,7 +3,6 @@ package com.zendesk.rememberthedate.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -56,9 +55,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        // Actionbar color
-        actionBar.setBackgroundDrawable(new ColorDrawable(0xFFE82A2A));
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
