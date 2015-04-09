@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-    package="com.zendesk.rememberthedate" >
+          package="com.zendesk.rememberthedate" >
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <permission android:name="com.zendesk.rememberthedate.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="com.zendesk.rememberthedate.permission.C2D_MESSAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -11,6 +18,7 @@
         android:theme="@style/AppTheme"
         android:versionCode="2"
         android:versionName="1.0" >
+        
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name" >
@@ -20,6 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name=".ui.CreateDateActivity"
             android:label="@string/title_activity_create_date" >
@@ -31,11 +40,23 @@
             android:name=".ui.CreateProfileActivity"
             android:label="@string/title_activity_create_profile" >
         </activity>
+        
         <activity
             android:name=".ui.ProfileActivity"
             android:label="@string/title_activity_profile" >
         </activity>
 
+        <receiver
+            android:name=".push.PushBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.zendesk.rememberthedate" />
+            </intent-filter>
+        </receiver>
+        
+        <service android:name=".push.PushIntentService" />
+        
     </application>
 
 </manifest>
