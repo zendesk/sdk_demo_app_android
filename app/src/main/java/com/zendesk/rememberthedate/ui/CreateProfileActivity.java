@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.zendesk.rememberthedate.R;
 import com.zendesk.rememberthedate.model.UserProfile;
@@ -138,18 +139,26 @@ public class CreateProfileActivity extends ActionBarActivity {
             EditText    emailText   = (EditText)this.findViewById(R.id.emailText);
 
             String email = emailText.getText().toString();
+            
+            if(StringUtils.hasLength(email)){
+                mUserProfileStorage.storeUserProfile(
+                        nameText.getText().toString(),
+                        email,
+                        currentBitmap
+                );
 
-            mUserProfileStorage.storeUserProfile(
-                    nameText.getText().toString(),
-                    email,
-                    currentBitmap
-            );
-
-            if (StringUtils.hasLength(email)) {
-                ZendeskConfig.INSTANCE.setIdentity(new JwtIdentity(email));
+                if (StringUtils.hasLength(email)) {
+                    ZendeskConfig.INSTANCE.setIdentity(new JwtIdentity(email));
+                }
+                
+                finish();
+                
+            }else{
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.fragment_profile_invalid_email), Toast.LENGTH_LONG).show();
+                
             }
 
-            finish();
+            
             return true;
         }
 

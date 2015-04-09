@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="zd_url">https://rememberthedate.zendesk.com</string>
+    <string name="zd_appid">b892498e99e6e01920489988755918219684f60af86bcd10</string>
+    <string name="zd_oauth">mobile_sdk_client_7f7d3c9abd345afe080e</string>
+</resources>

@@ -14,20 +14,34 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.zendesk.rememberthedate.R;
+import com.zendesk.rememberthedate.push.GcmUtil;
+import com.zendesk.rememberthedate.storage.PushNotificationStorage;
 import com.zendesk.rememberthedate.storage.UserProfileStorage;
 import com.zendesk.sdk.feedback.impl.BaseZendeskFeedbackConfiguration;
 import com.zendesk.sdk.logger.Logger;
+import com.zendesk.sdk.model.network.ErrorResponse;
 import com.zendesk.sdk.model.network.JwtIdentity;
+import com.zendesk.sdk.model.network.PushRegistrationResponse;
+import com.zendesk.sdk.network.impl.ZendeskCallback;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
 import com.zendesk.sdk.util.StringUtils;
 
 import java.util.Locale;
 
+import retrofit.client.Response;
+
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener, DateFragment.OnFragmentInteractionListener {
 
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    
+    public static final String EXTRA_VIEWPAGER_POSITION = "extra_viewpager_pos";
+    public static final int VIEWPAGER_POS_DATES = 0;
+    public static final int VIEWPAGER_POS_HELP = 1;
+    
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -44,6 +58,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     ViewPager mViewPager;
 
     private UserProfileStorage mStorage;
+    private PushNotificationStorage mPushStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +89,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             }
         });
 
-
-
         // For each of the sections in the app, add a tab to the action bar.
         for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
             // Create a tab with text corresponding to the page title defined by
@@ -87,13 +100,24 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+
+        final int viewPagerPosition = getIntent().getIntExtra(EXTRA_VIEWPAGER_POSITION, VIEWPAGER_POS_DATES);
+        if(viewPagerPosition < mSectionsPagerAdapter.getCount()) {
+            mViewPager.setCurrentItem(viewPagerPosition);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initialisePush();
     }
 
     void initialiseSdk() {
-
         mStorage = new UserProfileStorage(this);
+        mPushStorage = new PushNotificationStorage(this);
 
-        ZendeskConfig.INSTANCE.init(this, "https://rememberthedate.zendesk.com", "b892498e99e6e01920489988755918219684f60af86bcd10", "mobile_sdk_client_7f7d3c9abd345afe080e");
+        ZendeskConfig.INSTANCE.init(this, getResources().getString(R.string.zd_url), getResources().getString(R.string.zd_appid), getResources().getString(R.string.zd_oauth));
 
         ZendeskConfig.INSTANCE.setContactConfiguration(new BaseZendeskFeedbackConfiguration() {
             @Override
@@ -104,12 +128,63 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
         String email = mStorage.getProfile().getEmail();
 
-        if (StringUtils.hasLength(email)) {
+        if (StringUtils.hasLength(email)){
             Logger.i("Identity", "Setting identity");
             ZendeskConfig.INSTANCE.setIdentity(new JwtIdentity(email));
         }
+    }
 
+    void initialisePush(){
+        // Check if we already saved the device' push identifier.
+        // If not, enable push.
+        if(!mPushStorage.hasPushIdentifier()){
+            enablePush();
 
+        // If there is a push identifier, but app version has changed
+        // unregister and register the device.
+        // See: https://developer.android.com/google/gcm/client.html#sample-register
+        } else if(mPushStorage.hasPushIdentifier() && mPushStorage.isAppUpdated()){
+
+            final String pushIdentifier = mPushStorage.getPushIdentifier();
+            ZendeskConfig.INSTANCE.disablePush(pushIdentifier, new ZendeskCallback<Response>() {
+                @Override
+                public void onSuccess(Response result) {
+                    mPushStorage.clear();
+                    enablePush();
+                }
+
+                @Override
+                public void onError(ErrorResponse error) {
+                    Logger.e(LOG_TAG, "No able to disable push notifications: " + error.getReason());
+                }
+            });
+        }
+    }
+    
+    void enablePush(){
+        if(GcmUtil.checkPlayServices(this)){
+            GcmUtil.asyncRegister(this, new ZendeskCallback<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    ZendeskConfig.INSTANCE.enablePush(result, new ZendeskCallback<PushRegistrationResponse>() {
+                        @Override
+                        public void onSuccess(PushRegistrationResponse result) {
+                            mPushStorage.storePushIdentifier(result.getIdentifier());
+                        }
+
+                        @Override
+                        public void onError(ErrorResponse error) {
+                            Logger.e(LOG_TAG, "No able to enable push notifications: " + error.getReason());
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(ErrorResponse error) {
+                    Toast.makeText(MainActivity.this.getApplicationContext(), getResources().getString(R.string.push_error_obtain_push_id), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     @Override
@@ -218,8 +293,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             return null;
         }
     }
-
-
 
     @Override
     public void onFragmentInteraction(String id) {
