@@ -6,7 +6,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.BatteryManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
@@ -31,12 +30,12 @@ import com.zendesk.sdk.logger.Logger;
 import com.zendesk.sdk.model.CustomField;
 import com.zendesk.sdk.model.DeviceInfo;
 import com.zendesk.sdk.model.MemoryInformation;
+import com.zendesk.sdk.model.AuthenticationType;
 import com.zendesk.sdk.model.network.ErrorResponse;
 import com.zendesk.sdk.model.network.JwtIdentity;
 import com.zendesk.sdk.model.network.PushRegistrationResponse;
 import com.zendesk.sdk.network.impl.ZendeskCallback;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
-import com.zendesk.sdk.power.PowerConfig;
 import com.zendesk.sdk.util.FileUtils;
 import com.zendesk.sdk.util.StringUtils;
 
@@ -242,17 +241,22 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             GcmUtil.asyncRegister(this, new ZendeskCallback<String>() {
                 @Override
                 public void onSuccess(String result) {
-                    ZendeskConfig.INSTANCE.enablePush(result, new ZendeskCallback<PushRegistrationResponse>() {
-                        @Override
-                        public void onSuccess(PushRegistrationResponse result) {
-                            mPushStorage.storePushIdentifier(result.getIdentifier());
-                        }
 
-                        @Override
-                        public void onError(ErrorResponse error) {
-                            Logger.e(LOG_TAG, "No able to enable push notifications: " + error.getReason());
-                        }
-                    });
+                    final AuthenticationType authentication = ZendeskConfig.INSTANCE.getSettings().getSdkSettings().getAuthentication();
+
+                    if(authentication != null) {
+                        ZendeskConfig.INSTANCE.enablePush(result, new ZendeskCallback<PushRegistrationResponse>() {
+                            @Override
+                            public void onSuccess(PushRegistrationResponse result) {
+                                mPushStorage.storePushIdentifier(result.getIdentifier());
+                            }
+
+                            @Override
+                            public void onError(ErrorResponse error) {
+                                Logger.e(LOG_TAG, "Failed during enabling push notifications: " + error.getReason());
+                            }
+                        });
+                    }
                 }
 
                 @Override
