@@ -14,3 +14,13 @@ env:
   - secure: GeIi5Obx4J1EqDpA5lnRhF2i0vjJj9SCXzbiSbyiy6gWo9/SuoV4QF46VJVMMU2cfD6b4Y4x6MlbnWnGD+8w3vqMLRN9gJxBukdv8fe8FHXLC2VYOi5lBQHAPip0KaqDlLTMp6U0tKD/2/y7FGXWNbu651SvjOzmwlDBiC0xKaM=
   - secure: oIgx29UwqqHlv1y3+Egh1ojXAdktTqNSZjcA4n/k9S9aXfDqw8XMsbDt3VY9yQPZXuRug6aOkTLSanlC+4IajcGX9fM6/3Va1bSpCt8bkWGVXA2enHyEEoVy6s/LfJmuD8lpIltr0yeKafQp6RU61xmqlEtw9DggxI0shg60d14=
   - secure: iT32cHpCue2TJvME/tJYjWR1TbyPJnTXzdaAuQ8FnIkZWBPhsWPZ5KLeUvsAKnsohSaD/qMw68s/NpEI9emob6xdsmML2IvyMK3EL7e8t60xnyYOM1RGOZXoP7XQ7G8+DB7GLx1O8YjNlAPQhR7LcoNKa9cKQ4iox0JfhQMM/BM=
+deploy:
+  provider: releases
+  api_key:
+    secure: MNBI+eK7Aa4BCucvmxzzVlm/Tc4fyqdjv1iu5IqtjJc4vFUE3LvjBJ9d/lsQD89eavj8STMyONhbQ2+6JL6EKrfhulwwMVd5N//daLO9KA/xfEpIZO9z9RvP5VdqTDDTYrJ52HrB/MC+v5AqxxZUfk7XVjxRmAvefGWhVtlZ8CY=
+  file:
+    - ./app/build/outputs/apk/app-debug.apk
+    - ./app/build/outputs/apk/app-release.apk
+  on:
+    repo: zendesk/sdk_demo_app_android
+    tags: true
