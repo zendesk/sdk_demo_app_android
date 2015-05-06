@@ -70,7 +70,7 @@ public class DateFragment extends ListFragment {
     {
         Map<String, String> mapData    = loadMap("dates");
 
-        data   = new ArrayList<Item>();
+        data   = new ArrayList<>();
 
         Iterator it = mapData.entrySet().iterator();
         while (it.hasNext()) {
@@ -99,7 +99,7 @@ public class DateFragment extends ListFragment {
     }
 
     private Map<String,String> loadMap(String Key){
-        Map<String,String> outputMap = new HashMap<String,String>();
+        Map<String,String> outputMap = new HashMap<>();
         SharedPreferences pSharedPref = getActivity().getApplicationContext().getSharedPreferences("MyDates", Context.MODE_PRIVATE);
         try{
             if (pSharedPref != null){

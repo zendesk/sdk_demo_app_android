@@ -353,7 +353,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         public Drawable getPageIcon(int position) {
             switch (position) {
                 case 0:
-                    return getDrawable(R.drawable.ic_home);
+                    return getResources().getDrawable(R.drawable.ic_home);
                 case 1:
                     return null;
             }
