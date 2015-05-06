@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
+
     defaultConfig {
         applicationId "com.zendesk.rememberthedate"
         minSdkVersion 15
@@ -10,13 +11,19 @@ android {
         versionCode 7
         versionName "1.2"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    productFlavors {
+
+    lintOptions {
+        // Don't change this to false
+        abortOnError true
+
+        lintConfig file("lint.xml")
     }
 }
 

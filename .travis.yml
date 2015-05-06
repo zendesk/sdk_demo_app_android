@@ -5,4 +5,4 @@ android:
   - build-tools-21.1.2
   licenses:
   - android-sdk-license-[0-9a-f]{8}
-script: ./gradlew clean assembleDebug
+script: ./gradlew clean assembleDebug lintDebug
