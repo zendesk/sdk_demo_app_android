@@ -8,7 +8,7 @@ android:
 script: ./scripts/buildApp.sh
 before_install:
 - openssl aes-256-cbc -K $encrypted_218b70c0d15d_key -iv $encrypted_218b70c0d15d_iv
-  -in scripts/rts.jks.enc -out scripts/rtd.jks -d
+  -in scripts/rtd.jks.enc -out scripts/rtd.jks -d
 env:
   global:
   - secure: GeIi5Obx4J1EqDpA5lnRhF2i0vjJj9SCXzbiSbyiy6gWo9/SuoV4QF46VJVMMU2cfD6b4Y4x6MlbnWnGD+8w3vqMLRN9gJxBukdv8fe8FHXLC2VYOi5lBQHAPip0KaqDlLTMp6U0tKD/2/y7FGXWNbu651SvjOzmwlDBiC0xKaM=

@@ -16,8 +16,8 @@ android {
         release {
             storeFile file("../scripts/rtd.jks")
             storePassword System.getenv("RTD_STORE_PASS")
-            keyAlias System.getenv("RTD_STORE_PASS")
-            keyPassword System.getenv("RTD_STORE_PASS")
+            keyAlias System.getenv("RTD_ALIAS")
+            keyPassword System.getenv("RTD_KEY_PASS")
         }
     }
 
