@@ -175,7 +175,7 @@ public class CreateDateActivity extends ActionBarActivity {
     }
 
     private Map<String,String> loadMap(String Key){
-        Map<String,String> outputMap = new HashMap<String,String>();
+        Map<String,String> outputMap = new HashMap<>();
         SharedPreferences pSharedPref = getApplicationContext().getSharedPreferences("MyDates", Context.MODE_PRIVATE);
         try{
             if (pSharedPref != null){
