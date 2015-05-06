@@ -12,8 +12,18 @@ android {
         versionName "1.2"
     }
 
+    signingConfigs {
+        release {
+            storeFile file("../scripts/rtd.jks")
+            storePassword System.getenv("RTD_STORE_PASS")
+            keyAlias System.getenv("RTD_STORE_PASS")
+            keyPassword System.getenv("RTD_STORE_PASS")
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
