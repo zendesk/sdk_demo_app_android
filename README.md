@@ -1,5 +1,7 @@
 :warning: *Use of this software is subject to important terms and conditions as set forth in the License file* :warning:
 
+[![Build Status](https://travis-ci.org/zendesk/sdk_demo_app_android.svg?branch=master)](https://travis-ci.org/zendesk/sdk_demo_app_android)
+
 # Zendesk Mobile SDK Android Demo app
 
 The "Remember the Date" demo app demonstrates how to use the Zendesk Mobile SDK to build native support into your mobile application.
