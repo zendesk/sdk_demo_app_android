@@ -18,7 +18,7 @@ import com.zendesk.sdk.feedback.ui.ContactZendeskActivity;
 import com.zendesk.sdk.rating.ui.RateMyAppDialog;
 import com.zendesk.sdk.requests.RequestActivity;
 import com.zendesk.sdk.support.SupportActivity;
-import com.zendesk.sdk.util.StringUtils;
+import com.zendesk.util.StringUtils;
 
 /**
  * A placeholder fragment containing a simple view.

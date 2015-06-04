@@ -27,7 +27,7 @@ import com.zendesk.rememberthedate.model.UserProfile;
 import com.zendesk.rememberthedate.storage.UserProfileStorage;
 import com.zendesk.sdk.model.network.JwtIdentity;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
-import com.zendesk.sdk.util.StringUtils;
+import com.zendesk.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;

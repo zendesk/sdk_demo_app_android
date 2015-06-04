@@ -20,24 +20,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.zendesk.logger.Logger;
 import com.zendesk.rememberthedate.BuildConfig;
 import com.zendesk.rememberthedate.R;
 import com.zendesk.rememberthedate.push.GcmUtil;
 import com.zendesk.rememberthedate.storage.PushNotificationStorage;
 import com.zendesk.rememberthedate.storage.UserProfileStorage;
 import com.zendesk.sdk.feedback.impl.BaseZendeskFeedbackConfiguration;
-import com.zendesk.sdk.logger.Logger;
+import com.zendesk.sdk.model.AuthenticationType;
 import com.zendesk.sdk.model.CustomField;
 import com.zendesk.sdk.model.DeviceInfo;
 import com.zendesk.sdk.model.MemoryInformation;
-import com.zendesk.sdk.model.AuthenticationType;
-import com.zendesk.sdk.model.network.ErrorResponse;
 import com.zendesk.sdk.model.network.JwtIdentity;
 import com.zendesk.sdk.model.network.PushRegistrationResponse;
-import com.zendesk.sdk.network.impl.ZendeskCallback;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
-import com.zendesk.sdk.util.FileUtils;
-import com.zendesk.sdk.util.StringUtils;
+import com.zendesk.service.ErrorResponse;
+import com.zendesk.service.ZendeskCallback;
+import com.zendesk.util.FileUtils;
+import com.zendesk.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -242,21 +242,17 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 @Override
                 public void onSuccess(String result) {
 
-                    final AuthenticationType authentication = ZendeskConfig.INSTANCE.getSettings().getSdkSettings().getAuthentication();
+                    ZendeskConfig.INSTANCE.enablePush(result, new ZendeskCallback<PushRegistrationResponse>() {
+                        @Override
+                        public void onSuccess(PushRegistrationResponse result) {
+                            mPushStorage.storePushIdentifier(result.getIdentifier());
+                        }
 
-                    if(authentication != null) {
-                        ZendeskConfig.INSTANCE.enablePush(result, new ZendeskCallback<PushRegistrationResponse>() {
-                            @Override
-                            public void onSuccess(PushRegistrationResponse result) {
-                                mPushStorage.storePushIdentifier(result.getIdentifier());
-                            }
-
-                            @Override
-                            public void onError(ErrorResponse error) {
-                                Logger.e(LOG_TAG, "Failed during enabling push notifications: " + error.getReason());
-                            }
-                        });
-                    }
+                        @Override
+                        public void onError(ErrorResponse error) {
+                            Logger.e(LOG_TAG, "Failed during enabling push notifications: " + error.getReason());
+                        }
+                    });
                 }
 
                 @Override
@@ -338,8 +334,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             if (position == 0) {
                 return DateFragment.newInstance();
             }
-            else
-            {
+            else {
                 return HelpFragment.newInstance(position+1);
             }
         }

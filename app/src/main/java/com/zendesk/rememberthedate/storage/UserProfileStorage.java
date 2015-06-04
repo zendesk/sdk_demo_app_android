@@ -7,7 +7,7 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import com.zendesk.rememberthedate.model.UserProfile;
-import com.zendesk.sdk.util.StringUtils;
+import com.zendesk.util.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 
