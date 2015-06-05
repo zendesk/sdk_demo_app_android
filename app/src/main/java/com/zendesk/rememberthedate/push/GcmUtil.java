@@ -8,9 +8,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.zendesk.rememberthedate.R;
-import com.zendesk.sdk.model.network.ErrorResponse;
-import com.zendesk.sdk.network.impl.ZendeskCallback;
-import com.zendesk.sdk.util.StringUtils;
+import com.zendesk.service.ErrorResponse;
+import com.zendesk.service.ErrorResponseAdapter;
+import com.zendesk.service.ZendeskCallback;
+import com.zendesk.util.StringUtils;
 
 import java.io.IOException;
 
@@ -41,7 +42,7 @@ public class GcmUtil {
      * Helper method to receive a GCM registration id.
      *
      * @param activity  An activity
-     * @param callback  Callback that will deliver a push registration id or {@link com.zendesk.sdk.model.network.ErrorResponse}
+     * @param callback  Callback that will deliver a push registration id or {@link ErrorResponse}
      */
     public static void asyncRegister(final Activity activity, final ZendeskCallback<String> callback) {
         new AsyncTask<Void, Void, Result>() {
@@ -55,23 +56,10 @@ public class GcmUtil {
                     result.identifier = id;
 
                 } catch (final IOException ex) {
+
                     ex.printStackTrace();
-                    result.errorResponse = new ErrorResponse() {
-                        @Override
-                        public boolean isNetworkError() {
-                            return false;
-                        }
+                    result.errorResponse = new ErrorResponseAdapter(ex.getLocalizedMessage());
 
-                        @Override
-                        public String getReason() {
-                            return ex.getMessage();
-                        }
-
-                        @Override
-                        public int getStatus() {
-                            return -1;
-                        }
-                    };
                 }
                 return result;
             }
