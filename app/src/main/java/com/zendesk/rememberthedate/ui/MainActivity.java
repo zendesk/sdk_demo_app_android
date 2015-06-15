@@ -25,6 +25,7 @@ import com.zendesk.rememberthedate.BuildConfig;
 import com.zendesk.rememberthedate.R;
 import com.zendesk.rememberthedate.model.UserProfile;
 import com.zendesk.rememberthedate.push.GcmUtil;
+import com.zendesk.rememberthedate.push.RegistrationIntentService;
 import com.zendesk.rememberthedate.storage.PushNotificationStorage;
 import com.zendesk.rememberthedate.storage.UserProfileStorage;
 import com.zendesk.sdk.feedback.impl.BaseZendeskFeedbackConfiguration;
@@ -223,54 +224,14 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     void initialisePush(){
         // Check if we already saved the device' push identifier.
         // If not, enable push.
-        if(!mPushStorage.hasPushIdentifier()){
+        if(!mPushStorage.hasPushIdentifier()) {
             enablePush();
-
-        // If there is a push identifier, but app version has changed
-        // unregister and register the device.
-        // See: https://developer.android.com/google/gcm/client.html#sample-register
-        } else if(mPushStorage.hasPushIdentifier() && mPushStorage.isAppUpdated()){
-
-            final String pushIdentifier = mPushStorage.getPushIdentifier();
-            ZendeskConfig.INSTANCE.disablePush(pushIdentifier, new ZendeskCallback<Response>() {
-                @Override
-                public void onSuccess(Response result) {
-                    mPushStorage.clear();
-                    enablePush();
-                }
-
-                @Override
-                public void onError(ErrorResponse error) {
-                    Logger.e(LOG_TAG, "No able to disable push notifications: " + error.getReason());
-                }
-            });
         }
     }
     
     void enablePush(){
         if(GcmUtil.checkPlayServices(this)){
-            GcmUtil.asyncRegister(this, new ZendeskCallback<String>() {
-                @Override
-                public void onSuccess(String result) {
-
-                    ZendeskConfig.INSTANCE.enablePush(result, new ZendeskCallback<PushRegistrationResponse>() {
-                        @Override
-                        public void onSuccess(PushRegistrationResponse result) {
-                            mPushStorage.storePushIdentifier(result.getIdentifier());
-                        }
-
-                        @Override
-                        public void onError(ErrorResponse error) {
-                            Logger.e(LOG_TAG, "Failed during enabling push notifications: " + error.getReason());
-                        }
-                    });
-                }
-
-                @Override
-                public void onError(ErrorResponse error) {
-                    Toast.makeText(MainActivity.this.getApplicationContext(), getResources().getString(R.string.push_error_obtain_push_id), Toast.LENGTH_LONG).show();
-                }
-            });
+            RegistrationIntentService.start(this);
         }
     }
 

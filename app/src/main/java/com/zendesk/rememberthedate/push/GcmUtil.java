@@ -1,12 +1,15 @@
 package com.zendesk.rememberthedate.push;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v4.util.Pair;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 import com.zendesk.rememberthedate.R;
 import com.zendesk.service.ErrorResponse;
 import com.zendesk.service.ErrorResponseAdapter;
@@ -38,48 +41,41 @@ public class GcmUtil {
         return true;
     }
 
-    /**
-     * Helper method to receive a GCM registration id.
-     *
-     * @param activity  An activity
-     * @param callback  Callback that will deliver a push registration id or {@link ErrorResponse}
-     */
-    public static void asyncRegister(final Activity activity, final ZendeskCallback<String> callback) {
-        new AsyncTask<Void, Void, Result>() {
+
+    public static void getInstanceId(final Context context, final ZendeskCallback<String> callback){
+        final  InstanceID instanceID = InstanceID.getInstance(context);
+
+        new AsyncTask<Void, Void, Pair<String, ErrorResponse>>() {
             @Override
-            protected Result doInBackground(Void... params) {
-                final Result result = new Result();
+            protected Pair<String, ErrorResponse> doInBackground(final Void... params) {
+
+                String identifier = null;
+                ErrorResponse errorResponse = null;
+
                 try {
+                    final String token = instanceID.getToken(context.getString(R.string.gcm_defaultSenderId), GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+                    identifier = token;
 
-                    final GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(activity.getApplicationContext());
-                    final String id = gcm.register(activity.getResources().getString(R.string.push_sender_id));
-                    result.identifier = id;
-
-                } catch (final IOException ex) {
-
-                    ex.printStackTrace();
-                    result.errorResponse = new ErrorResponseAdapter(ex.getLocalizedMessage());
+                } catch (IOException e) {
+                    errorResponse = new ErrorResponseAdapter(e.getLocalizedMessage());
 
                 }
-                return result;
+
+                return new Pair<>(identifier, errorResponse);
             }
 
             @Override
-            protected void onPostExecute(Result result) {
+            protected void onPostExecute(final Pair<String, ErrorResponse> result) {
                 if(callback != null){
-                    if(StringUtils.hasLength(result.identifier)){
-                        callback.onSuccess(result.identifier);
+                    if(StringUtils.hasLength(result.first)){
+                        callback.onSuccess(result.first);
                     }else{
-                        callback.onError(result.errorResponse);
+                        callback.onError(result.second);
                     }
                 }
             }
+
         }.execute();
-    }
-    
-    static class Result{
-        String identifier;
-        ErrorResponse errorResponse;
     }
 
 }

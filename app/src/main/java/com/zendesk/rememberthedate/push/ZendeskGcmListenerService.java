@@ -1,6 +1,5 @@
 package com.zendesk.rememberthedate.push;
 
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -16,7 +15,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.gcm.GcmListenerService;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
@@ -41,97 +40,88 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class PushIntentService extends IntentService {
-    
-    private static final String LOG_TAG = PushIntentService.class.getSimpleName();
+public class ZendeskGcmListenerService extends GcmListenerService {
+
+    private final static String LOG_TAG = ZendeskGcmListenerService.class.getSimpleName();
     private static final int NOTIFICATION_ID = 134345;
     public static final String ZD_REQUEST_ID_EXTRA = "zendesk_sdk_request_id";
 
-    public PushIntentService() {
-        super(PushIntentService.class.getSimpleName());
-    }
 
     @Override
-    protected void onHandleIntent(final Intent intent) {
+    public void onMessageReceived(final String from, final Bundle data) {
+        super.onMessageReceived(from, data);
 
-        final GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-        final String messageType = gcm.getMessageType(intent);
 
-        // Check if the intent was issued by GCM
-        if(GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)){
+        final String requestId = data.getString(ZD_REQUEST_ID_EXTRA);
 
-            // Extract the pushed payload out of the intent
-            final Bundle extras = intent.getExtras();
-            final String requestId = extras.getString(ZD_REQUEST_ID_EXTRA);
-
-            // Check if a valid request id was provided
-            if(!StringUtils.hasLength(requestId)){
-                return;
-            }
-
-            // If the Fragment with the pushed request id is visible,
-            // this will cause a reload of the screen.
-            // #refreshComments(id) will return true if it was successful.
-            if(ZendeskDeepLinking.INSTANCE.refreshComments(requestId)){
-                return;
-            }
-
-            // Initialise the SDK
-            // This IntentService could be called and any point. So, if the main app was killed,
-            // there won't be any Zendesk login information. Moreover, we presume at this point, that
-            // an valid identity was set.
-            if(!ZendeskConfig.INSTANCE.isInitialized()){
-                ZendeskConfig.INSTANCE.init(this, getResources().getString(R.string.zd_url), getResources().getString(R.string.zd_appid), getResources().getString(R.string.zd_oauth));
-            }
-
-            final ZendeskRequestProvider requestProvider = new ZendeskRequestProvider();
-
-            // To take advantage of the highly customable notifications on Android, we will try to download
-            // some extra information. First we will download all comments associated with this request.
-            requestProvider.getComments(requestId, new ZendeskCallback<CommentsResponse>() {
-                @Override
-                public void onSuccess(final CommentsResponse result) {
-
-                    // Search for the newest comment.
-                    final CommentResponse newestResponse = getNewestResponse(result.getComments());
-                    if (newestResponse == null) {
-                        Logger.d(LOG_TAG, "No comments with requId: " + requestId);
-                        fallbackNotification(requestId, intent);
-                        return;
-                    }
-
-                    // Check if there is a valid user, associated with user id.
-                    final User user = findUser(result.getUsers(), newestResponse.getAuthorId());
-                    if (user == null) {
-                        Logger.d(LOG_TAG, "No user with authorId: " + newestResponse.getAuthorId());
-                        fallbackNotification(requestId, intent);
-                        return;
-                    }
-
-                    // Download more information about the request itself.
-                    requestProvider.getRequest(requestId, new ZendeskCallback<Request>() {
-                        @Override
-                        public void onSuccess(Request request) {
-                            showFullNotification(newestResponse, request, user, intent);
-                        }
-
-                        @Override
-                        public void onError(ErrorResponse error) {
-                            fallbackNotification(requestId, intent);
-                        }
-                    });
-
-                }
-
-                @Override
-                public void onError(ErrorResponse error) {
-                    fallbackNotification(requestId, intent);
-                }
-            });
+        // Check if a valid request id was provided
+        if(!StringUtils.hasLength(requestId)){
+            return;
         }
+
+        // If the Fragment with the pushed request id is visible,
+        // this will cause a reload of the screen.
+        // #refreshComments(id) will return true if it was successful.
+        if(ZendeskDeepLinking.INSTANCE.refreshComments(requestId)){
+            return;
+        }
+
+        // Initialise the SDK
+        // This IntentService could be called and any point. So, if the main app was killed,
+        // there won't be any Zendesk login information. Moreover, we presume at this point, that
+        // an valid identity was set.
+        if(!ZendeskConfig.INSTANCE.isInitialized()){
+            ZendeskConfig.INSTANCE.init(this, getResources().getString(R.string.zd_url), getResources().getString(R.string.zd_appid), getResources().getString(R.string.zd_oauth));
+        }
+
+        final ZendeskRequestProvider requestProvider = new ZendeskRequestProvider();
+
+        // To take advantage of the highly customable notifications on Android, we will try to download
+        // some extra information. First we will download all comments associated with this request.
+        requestProvider.getComments(requestId, new ZendeskCallback<CommentsResponse>() {
+            @Override
+            public void onSuccess(final CommentsResponse result) {
+
+                // Search for the newest comment.
+                final CommentResponse newestResponse = getNewestResponse(result.getComments());
+                if (newestResponse == null) {
+                    Logger.d(LOG_TAG, "No comments with requId: " + requestId);
+                    fallbackNotification(requestId);
+                    return;
+                }
+
+                // Check if there is a valid user, associated with user id.
+                final User user = findUser(result.getUsers(), newestResponse.getAuthorId());
+                if (user == null) {
+                    Logger.d(LOG_TAG, "No user with authorId: " + newestResponse.getAuthorId());
+                    fallbackNotification(requestId);
+                    return;
+                }
+
+                // Download more information about the request itself.
+                requestProvider.getRequest(requestId, new ZendeskCallback<Request>() {
+                    @Override
+                    public void onSuccess(Request request) {
+                        showFullNotification(newestResponse, request, user);
+                    }
+
+                    @Override
+                    public void onError(ErrorResponse error) {
+                        fallbackNotification(requestId);
+                    }
+                });
+
+            }
+
+            @Override
+            public void onError(ErrorResponse error) {
+                fallbackNotification(requestId);
+            }
+        });
+
     }
-    
-    private void showFullNotification(final CommentResponse commentResponse, final Request request, final User user, final Intent intent){
+
+    private void showFullNotification(final CommentResponse commentResponse, final Request request, final User user){
 
         // Download agent's avatar picture to show it in the notification. Utilize Picasso to get
         // the agent's picture as Bitmap.
@@ -141,24 +131,24 @@ public class PushIntentService extends IntentService {
 
         if (user.getPhoto() != null) {
             requestCreator = ZendeskPicassoProvider.getInstance(getApplicationContext())
-                        .load(user.getPhoto().getContentUrl())
-                        .error(com.zendesk.sdk.R.drawable.zd_user_default_avatar)
-                        .transform(ZendeskPicassoTransformationFactory.INSTANCE.getRoundedTransformation((2 * dp), 0));
+                    .load(user.getPhoto().getContentUrl())
+                    .error(com.zendesk.sdk.R.drawable.zd_user_default_avatar)
+                    .transform(ZendeskPicassoTransformationFactory.INSTANCE.getRoundedTransformation((2 * dp), 0));
         } else {
             requestCreator = ZendeskPicassoProvider.getInstance(getApplicationContext())
-                        .load(com.zendesk.sdk.R.drawable.zd_user_default_avatar)
-                        .transform(ZendeskPicassoTransformationFactory.INSTANCE.getRoundedTransformation((2 * dp), 0));
+                    .load(com.zendesk.sdk.R.drawable.zd_user_default_avatar)
+                    .transform(ZendeskPicassoTransformationFactory.INSTANCE.getRoundedTransformation((2 * dp), 0));
         }
 
         requestCreator.into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                showFullFeaturedNotification(user, commentResponse, request, bitmap, intent);
+                showFullFeaturedNotification(user, commentResponse, request, bitmap);
             }
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
-                showFullFeaturedNotification(user, commentResponse, request, BitmapFactory.decodeResource(getResources(), R.drawable.ic_conversations), intent);
+                showFullFeaturedNotification(user, commentResponse, request, BitmapFactory.decodeResource(getResources(), R.drawable.ic_conversations));
             }
 
             @Override
@@ -167,8 +157,9 @@ public class PushIntentService extends IntentService {
             }
         });
     }
-    
-    private void showFullFeaturedNotification(User user, CommentResponse commentResponse, Request request, Bitmap bitmap, Intent intent){
+
+
+    private void showFullFeaturedNotification(User user, CommentResponse commentResponse, Request request, Bitmap bitmap){
 
         // Expected behaviour: Updated requests should get one notification each. Every new comment on
         // an already shown notification should update the notification.
@@ -194,15 +185,15 @@ public class PushIntentService extends IntentService {
 
         // Put everything together.
         final Notification notification = new NotificationCompat.Builder(getApplicationContext())
-            .setContentTitle(request.getSubject())
-            .setContentText(spannableString)
-            .setSmallIcon(R.drawable.ic_conversations)
-            .setLargeIcon(bitmap)
-            .setDefaults(Notification.DEFAULT_ALL)
-            .setStyle(new NotificationCompat.BigTextStyle().bigText(spannableString))
-            .setAutoCancel(true)
-            .setContentIntent(contentIntent)
-            .build();
+                .setContentTitle(request.getSubject())
+                .setContentText(spannableString)
+                .setSmallIcon(R.drawable.ic_conversations)
+                .setLargeIcon(bitmap)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(spannableString))
+                .setAutoCancel(true)
+                .setContentIntent(contentIntent)
+                .build();
 
 
         final NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -210,10 +201,11 @@ public class PushIntentService extends IntentService {
         // Show the notification.
         // Again, use request.getId().hashCode() as notification id.
         mNotificationManager.notify(request.getId().hashCode(), notification);
-        PushBroadcastReceiver.completeWakefulIntent(intent);
     }
-    
-    private void fallbackNotification(String requestId, Intent intent){
+
+
+
+    private void fallbackNotification(String requestId){
 
         // If an error occurs during downloading request information, a simple notification will be shown.
 
@@ -221,18 +213,17 @@ public class PushIntentService extends IntentService {
         final PendingIntent contentIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, requestIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         final Notification notification = new NotificationCompat.Builder(getApplicationContext())
-            .setSmallIcon(com.zendesk.sdk.R.drawable.ic_conversations)
-            .setDefaults(Notification.DEFAULT_ALL)
-            .setContentTitle(getResources().getString(R.string.app_name))
-            .setContentText(getResources().getString(R.string.push_notification_fallback_title))
-            .setAutoCancel(true)
-            .setContentIntent(contentIntent)
-            .build();
+                .setSmallIcon(com.zendesk.sdk.R.drawable.ic_conversations)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setContentTitle(getResources().getString(R.string.app_name))
+                .setContentText(getResources().getString(R.string.push_notification_fallback_title))
+                .setAutoCancel(true)
+                .setContentIntent(contentIntent)
+                .build();
 
         final NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         mNotificationManager.notify(NOTIFICATION_ID, notification);
-        PushBroadcastReceiver.completeWakefulIntent(intent);
     }
 
     private Intent getDeepLinkIntent(String requestId, String subject){
@@ -253,8 +244,8 @@ public class PushIntentService extends IntentService {
 
         return ZendeskDeepLinking.INSTANCE.getRequestIntent(getApplicationContext(), requestId, subject, backStackItems, mainActivity);
     }
-    
-    
+
+
     private CommentResponse getNewestResponse(List<CommentResponse> comments){
         return Collections.max(new ArrayList<>(comments), new Comparator<CommentResponse>() {
             @Override
@@ -263,8 +254,8 @@ public class PushIntentService extends IntentService {
             }
         });
     }
-    
-    
+
+
     private User findUser(List<User> users, long userId){
         for(User user : users){
             if(user.getId() == userId){
