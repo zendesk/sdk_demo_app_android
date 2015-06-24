@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.zendesk.logger.Logger;
 import com.zendesk.rememberthedate.BuildConfig;
 import com.zendesk.rememberthedate.R;
+import com.zendesk.rememberthedate.model.UserProfile;
 import com.zendesk.rememberthedate.push.GcmUtil;
 import com.zendesk.rememberthedate.storage.PushNotificationStorage;
 import com.zendesk.rememberthedate.storage.UserProfileStorage;
@@ -38,6 +39,8 @@ import com.zendesk.service.ErrorResponse;
 import com.zendesk.service.ZendeskCallback;
 import com.zendesk.util.FileUtils;
 import com.zendesk.util.StringUtils;
+import com.zopim.android.sdk.api.ZopimChat;
+import com.zopim.android.sdk.model.VisitorInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,12 +149,20 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             }
         });
 
-        String email = mStorage.getProfile().getEmail();
-
-
-        if (StringUtils.hasLength(email)){
+        final UserProfile profile = mStorage.getProfile();
+        if (StringUtils.hasLength(profile.getEmail())){
             Logger.i("Identity", "Setting identity");
-            ZendeskConfig.INSTANCE.setIdentity(new JwtIdentity(email));
+            ZendeskConfig.INSTANCE.setIdentity(new JwtIdentity(profile.getEmail()));
+
+            // Init Zopim Visitor info
+            final VisitorInfo.Builder build = new VisitorInfo.Builder()
+                    .email(profile.getEmail());
+
+            if(StringUtils.hasLength(profile.getName())){
+                build.name(profile.getName());
+            }
+
+            ZopimChat.setVisitorInfo(build.build());
         }
 
         ZendeskConfig.INSTANCE.setTicketFormId(TICKET_FORM_ID);

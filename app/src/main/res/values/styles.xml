@@ -4,7 +4,6 @@
     <style name="AppTheme" parent="ZendeskSdkTheme.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/RedActionBar</item>
 
-
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorSecondary</item>
 
@@ -12,6 +11,11 @@
         <item name="RateMyAppPaddingBottom">@dimen/rma_padding_bottom</item>
 
         <item name="android:textAppearance">@style/grey_text</item>
+    </style>
+
+    <style name="ZopimChatTheme" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="grey_text" parent="@android:style/TextAppearance">

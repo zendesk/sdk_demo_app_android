@@ -48,8 +48,15 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:id="@+id/fragment_main_btn_rate_the_app"
             android:text="@string/fragment_main_btn_rate_the_app"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/fragment_main_btn_chat"
+            android:text="@string/fragment_main_btn_chat"/>
 
     </LinearLayout>
 

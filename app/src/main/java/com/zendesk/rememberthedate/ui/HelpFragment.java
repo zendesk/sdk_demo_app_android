@@ -19,6 +19,9 @@ import com.zendesk.sdk.rating.ui.RateMyAppDialog;
 import com.zendesk.sdk.requests.RequestActivity;
 import com.zendesk.sdk.support.SupportActivity;
 import com.zendesk.util.StringUtils;
+import com.zopim.android.sdk.api.ZopimChat;
+import com.zopim.android.sdk.prechat.PreChatForm;
+import com.zopim.android.sdk.prechat.ZopimChatActivity;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -89,6 +92,27 @@ public class HelpFragment extends Fragment {
                         })
                         .withDontRemindMeAgainButton()
                         .build().showAlways(getActivity());
+            }
+        }, ctx));
+
+        rootView.findViewById(R.id.fragment_main_btn_chat).setOnClickListener(new AuthOnClickWrapper(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                final Intent intent = new Intent(getActivity(), ZopimChatActivity.class);
+
+
+                PreChatForm build = new PreChatForm.Builder()
+                        .name(PreChatForm.Field.REQUIRED)
+                        .email(PreChatForm.Field.REQUIRED)
+                        .phoneNumber(PreChatForm.Field.OPTIONAL)
+                        .message(PreChatForm.Field.OPTIONAL)
+                        .build();
+
+                ZopimChat.SessionConfig department = new ZopimChat.SessionConfig()
+                        .preChatForm(build)
+                        .department("The date");
+
+                ZopimChatActivity.startActivity(getActivity(), department);
             }
         }, ctx));
 

@@ -22,12 +22,15 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.zendesk.logger.Logger;
 import com.zendesk.rememberthedate.R;
 import com.zendesk.rememberthedate.model.UserProfile;
 import com.zendesk.rememberthedate.storage.UserProfileStorage;
 import com.zendesk.sdk.model.network.JwtIdentity;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
 import com.zendesk.util.StringUtils;
+import com.zopim.android.sdk.api.ZopimChat;
+import com.zopim.android.sdk.model.VisitorInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -147,10 +150,23 @@ public class CreateProfileActivity extends ActionBarActivity {
                         currentBitmap
                 );
 
-                if (StringUtils.hasLength(email)) {
-                    ZendeskConfig.INSTANCE.setIdentity(new JwtIdentity(email));
+                final UserProfile profile = mUserProfileStorage.getProfile();
+                if (StringUtils.hasLength(profile.getEmail())){
+                    Logger.i("Identity", "Setting identity");
+                    ZendeskConfig.INSTANCE.setIdentity(new JwtIdentity(profile.getEmail()));
+
+                    // Init Zopim Visitor info
+                    final VisitorInfo.Builder build = new VisitorInfo.Builder()
+                            .email(profile.getEmail());
+
+                    if(StringUtils.hasLength(profile.getName())){
+                        build.name(profile.getName());
+                    }
+
+                    ZopimChat.setVisitorInfo(build.build());
                 }
-                
+
+
                 finish();
                 
             }else{
