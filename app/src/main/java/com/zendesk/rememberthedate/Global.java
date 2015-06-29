@@ -15,9 +15,9 @@ public class Global extends Application {
         super.onCreate();
 
         if("replace_me_chat_account_id".equals(getString(R.string.zopim_account_id))){
-            Log.w(LOG_TAG, "=====================================================================");
-            Log.w(LOG_TAG, "Invalid account id found. Please add your Zopim accountId to 'zd.xml'");
-            Log.w(LOG_TAG, "=====================================================================");
+            Log.w(LOG_TAG, "==============================================================================================================");
+            Log.w(LOG_TAG, "Zopim chat is not connected to an account, if you wish to try chat please add your Zopim accountId to 'zd.xml'");
+            Log.w(LOG_TAG, "==============================================================================================================");
         }
 
         ZopimChat.init(getString(R.string.zopim_account_id)).build();
