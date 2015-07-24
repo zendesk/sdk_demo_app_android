@@ -62,7 +62,10 @@ public class CreateProfileActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        showStoredProfile();
+    }
 
+    private void showStoredProfile() {
         UserProfile userProfile = mUserProfileStorage.getProfile();
 
         ImageButton button = (ImageButton) this.findViewById(R.id.imageButton);
@@ -80,8 +83,13 @@ public class CreateProfileActivity extends ActionBarActivity {
             button.setImageBitmap(currentBitmap);
         }
 
-        nameText.setText(userProfile.getName());
-        emailText.setText(userProfile.getEmail());
+        if(!StringUtils.hasLength(nameText.getText().toString())){
+            nameText.setText(userProfile.getName());
+        }
+
+        if(!StringUtils.hasLength(emailText.getText().toString())){
+            emailText.setText(userProfile.getEmail());
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -153,7 +161,6 @@ public class CreateProfileActivity extends ActionBarActivity {
 
                     ZopimChat.setVisitorInfo(build.build());
                 }
-
 
                 finish();
 
