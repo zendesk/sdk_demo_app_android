@@ -62,12 +62,15 @@ public class CreateProfileActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        showStoredProfile();
+    }
 
+    private void showStoredProfile() {
         UserProfile userProfile = mUserProfileStorage.getProfile();
 
-        ImageButton button      = (ImageButton)this.findViewById(R.id.imageButton);
-        EditText    nameText    = (EditText)this.findViewById(R.id.nameText);
-        EditText    emailText   = (EditText)this.findViewById(R.id.emailText);
+        ImageButton button = (ImageButton) this.findViewById(R.id.imageButton);
+        EditText nameText = (EditText) this.findViewById(R.id.nameText);
+        EditText emailText = (EditText) this.findViewById(R.id.emailText);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,45 +83,38 @@ public class CreateProfileActivity extends ActionBarActivity {
             button.setImageBitmap(currentBitmap);
         }
 
-        nameText.setText(userProfile.getName());
-        emailText.setText(userProfile.getEmail());
+        if(!StringUtils.hasLength(nameText.getText().toString())){
+            nameText.setText(userProfile.getName());
+        }
+
+        if(!StringUtils.hasLength(emailText.getText().toString())){
+            emailText.setText(userProfile.getEmail());
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode == RESULT_OK) {
-            if (requestCode == 1001) {
-                final boolean isCamera;
-                if (data == null) {
-                    isCamera = true;
-                } else {
-                    final String action = data.getAction();
-                    if (action == null) {
-                        isCamera = false;
-                    } else {
-                        isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    }
-                }
+        if (resultCode == RESULT_OK && requestCode == 1001) {
+            Bitmap bitmap = null;
 
-                Uri selectedImageUri;
-                if (isCamera) {
-                    selectedImageUri = outputFileUri;
-                } else {
-                    selectedImageUri = data == null ? null : data.getData();
-                }
-
+            if(data.getData() != null) {
                 try {
-                    ImageButton button  = (ImageButton)this.findViewById(R.id.imageButton);
-                    Bitmap imageBitmap = Bitmap.createScaledBitmap(MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri), 120, 120, false);
-                    currentBitmap = imageBitmap;
-                    button.setImageBitmap(currentBitmap);
-                } catch (IOException e) {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+            } else if(data.getExtras() != null && data.getExtras().get("data") instanceof Bitmap){
+                bitmap = (Bitmap) data.getExtras().get("data");
+
+            }
+
+            if(bitmap != null){
+                currentBitmap = Bitmap.createScaledBitmap(bitmap, 120, 120, false);;
+                ((ImageButton) this.findViewById(R.id.imageButton)).setImageBitmap(currentBitmap);
             }
         }
-
     }
 
     @Override
@@ -138,12 +134,12 @@ public class CreateProfileActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
 
-            EditText    nameText    = (EditText)this.findViewById(R.id.nameText);
-            EditText    emailText   = (EditText)this.findViewById(R.id.emailText);
+            EditText nameText = (EditText) this.findViewById(R.id.nameText);
+            EditText emailText = (EditText) this.findViewById(R.id.emailText);
 
             String email = emailText.getText().toString();
-            
-            if(StringUtils.hasLength(email)){
+
+            if (StringUtils.hasLength(email)) {
                 mUserProfileStorage.storeUserProfile(
                         nameText.getText().toString(),
                         email,
@@ -151,7 +147,7 @@ public class CreateProfileActivity extends ActionBarActivity {
                 );
 
                 final UserProfile profile = mUserProfileStorage.getProfile();
-                if (StringUtils.hasLength(profile.getEmail())){
+                if (StringUtils.hasLength(profile.getEmail())) {
                     Logger.i("Identity", "Setting identity");
                     ZendeskConfig.INSTANCE.setIdentity(new JwtIdentity(profile.getEmail()));
 
@@ -159,50 +155,39 @@ public class CreateProfileActivity extends ActionBarActivity {
                     final VisitorInfo.Builder build = new VisitorInfo.Builder()
                             .email(profile.getEmail());
 
-                    if(StringUtils.hasLength(profile.getName())){
+                    if (StringUtils.hasLength(profile.getName())) {
                         build.name(profile.getName());
                     }
 
                     ZopimChat.setVisitorInfo(build.build());
                 }
 
-
                 finish();
-                
-            }else{
+
+            } else {
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.fragment_profile_invalid_email), Toast.LENGTH_LONG).show();
-                
+
             }
 
-            
+
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private Uri outputFileUri;
-
     private void openImageIntent() {
-
-        // Determine Uri of camera image to save.
-        final File root = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-        final String fname = "profile.png";
-        final File sdImageMainDirectory = new File(root, fname);
-        outputFileUri = Uri.fromFile(sdImageMainDirectory);
 
         // Camera.
         final List<Intent> cameraIntents = new ArrayList<>();
         final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         final PackageManager packageManager = getPackageManager();
         final List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
-        for(ResolveInfo res : listCam) {
+        for (ResolveInfo res : listCam) {
             final String packageName = res.activityInfo.packageName;
             final Intent intent = new Intent(captureIntent);
             intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
             intent.setPackage(packageName);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
             cameraIntents.add(intent);
         }
 
@@ -219,6 +204,7 @@ public class CreateProfileActivity extends ActionBarActivity {
 
         startActivityForResult(chooserIntent, 1001);
     }
+
     /**
      * A placeholder fragment containing a simple view.
      */
