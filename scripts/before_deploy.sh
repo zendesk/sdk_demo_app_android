@@ -7,3 +7,6 @@ SUFFIX='.bak'
 
 sed -i${SUFFIX} "s/$REPLACE_KEY/$ZOPIM_ACCOUNT_KEY/g" $ZD_CONFIG
 rm ${ZD_CONFIG}${SUFFIX}
+
+# Rebuild app
+./scripts/buildApp.sh
