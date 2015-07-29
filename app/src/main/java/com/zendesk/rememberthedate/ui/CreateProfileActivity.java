@@ -2,14 +2,13 @@ package com.zendesk.rememberthedate.ui;
 
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
@@ -32,8 +31,6 @@ import com.zendesk.util.StringUtils;
 import com.zopim.android.sdk.api.ZopimChat;
 import com.zopim.android.sdk.model.VisitorInfo;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,22 +38,24 @@ import java.util.List;
 public class CreateProfileActivity extends ActionBarActivity {
 
     private UserProfileStorage mUserProfileStorage;
-
-    private Bitmap currentBitmap;
+    private PlaceholderFragment mPlaceHolderFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_profile);
 
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
+        mUserProfileStorage = new UserProfileStorage(this);
+        final FragmentManager fm = getFragmentManager();
+        PlaceholderFragment dataFragment = (PlaceholderFragment) fm.findFragmentByTag(PlaceholderFragment.TAG);
+
+        if (dataFragment == null) {
+            dataFragment = new PlaceholderFragment();
+            fm.beginTransaction().add(R.id.container, dataFragment, PlaceholderFragment.TAG).commit();
+            dataFragment.setCurrentBitmap(mUserProfileStorage.getProfile().getAvatar());
         }
 
-        mUserProfileStorage = new UserProfileStorage(this);
-        currentBitmap = mUserProfileStorage.getProfile().getAvatar();
+        this.mPlaceHolderFragment = dataFragment;
     }
 
     @Override
@@ -79,8 +78,8 @@ public class CreateProfileActivity extends ActionBarActivity {
             }
         });
 
-        if (currentBitmap != null) {
-            button.setImageBitmap(currentBitmap);
+        if (mPlaceHolderFragment.getCurrentBitmap() != null) {
+            button.setImageBitmap(mPlaceHolderFragment.getCurrentBitmap());
         }
 
         if(!StringUtils.hasLength(nameText.getText().toString())){
@@ -111,8 +110,8 @@ public class CreateProfileActivity extends ActionBarActivity {
             }
 
             if(bitmap != null){
-                currentBitmap = Bitmap.createScaledBitmap(bitmap, 120, 120, false);;
-                ((ImageButton) this.findViewById(R.id.imageButton)).setImageBitmap(currentBitmap);
+                mPlaceHolderFragment.setCurrentBitmap(Bitmap.createScaledBitmap(bitmap, 120, 120, false));
+                ((ImageButton) this.findViewById(R.id.imageButton)).setImageBitmap(mPlaceHolderFragment.getCurrentBitmap());
             }
         }
     }
@@ -131,7 +130,6 @@ public class CreateProfileActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
 
             EditText nameText = (EditText) this.findViewById(R.id.nameText);
@@ -143,7 +141,7 @@ public class CreateProfileActivity extends ActionBarActivity {
                 mUserProfileStorage.storeUserProfile(
                         nameText.getText().toString(),
                         email,
-                        currentBitmap
+                        mPlaceHolderFragment.getCurrentBitmap()
                 );
 
                 final UserProfile profile = mUserProfileStorage.getProfile();
@@ -168,7 +166,6 @@ public class CreateProfileActivity extends ActionBarActivity {
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.fragment_profile_invalid_email), Toast.LENGTH_LONG).show();
 
             }
-
 
             return true;
         }
@@ -210,14 +207,26 @@ public class CreateProfileActivity extends ActionBarActivity {
      */
     public static class PlaceholderFragment extends Fragment {
 
+        public static final String TAG = "placeholder_fragment_create_profile";
+
+        private Bitmap currentBitmap;
+
         public PlaceholderFragment() {
-            // Intentionally empty
+            setRetainInstance(true);
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             return inflater.inflate(R.layout.fragment_create_profile, container, false);
+        }
+
+        public Bitmap getCurrentBitmap() {
+            return currentBitmap;
+        }
+
+        public void setCurrentBitmap(final Bitmap currentBitmap) {
+            this.currentBitmap = currentBitmap;
         }
     }
 }
