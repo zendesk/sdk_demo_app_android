@@ -58,8 +58,7 @@ public class HelpFragment extends Fragment {
         rootView.findViewById(R.id.fragment_main_btn_knowledge_base).setOnClickListener(new AuthOnClickWrapper(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), SupportActivity.class);
-                startActivity(intent);
+                new SupportActivity.Builder().show(getActivity());
             }
         }, ctx));
 
@@ -98,8 +97,6 @@ public class HelpFragment extends Fragment {
         rootView.findViewById(R.id.fragment_main_btn_chat).setOnClickListener(new AuthOnClickWrapper(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                final Intent intent = new Intent(getActivity(), ZopimChatActivity.class);
-
 
                 PreChatForm build = new PreChatForm.Builder()
                         .name(PreChatForm.Field.REQUIRED)
