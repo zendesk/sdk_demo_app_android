@@ -42,43 +42,12 @@ android {
     }
 }
 
-/*
- * Remove |
- *        V
- */
-configurations.all {
-    // check for updates every build
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
-def repoUsername = "$System.env.zdRepoUsername" == "null" ?
-        zdRepoUsername :
-        "$System.env.zdRepoUsername"
-
-def repoPassword = "$System.env.zdRepoPassword" == "null" ?
-        zdRepoPassword :
-        "$System.env.zdRepoPassword"
-
-repositories {
-    maven {
-        credentials {
-            username repoUsername
-            password repoPassword
-        }
-
-        url 'https://zdrepo.artifactoryonline.com/zdrepo/repo/'
-    }
-}
-/*
- * Remove End
- */
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compile 'com.android.support:support-v13:22.2.1'
     compile 'com.google.android.gms:play-services-gcm:7.8.0'
 
-    compile group: 'com.zendesk', name: 'sdk', version: '1.4.0.1-SNAPSHOT', changing: true
+    compile group: 'com.zendesk', name: 'sdk', version: '1.4.0.1', changing: true
     compile group: 'com.zopim.android', name: 'sdk', version: '1.0.1'
 }

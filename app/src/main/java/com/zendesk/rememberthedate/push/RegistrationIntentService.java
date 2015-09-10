@@ -65,7 +65,6 @@ public class RegistrationIntentService extends IntentService {
         });
     }
 
-
     void enablePush(final PushNotificationStorage pushNotificationStorage){
         GcmUtil.getInstanceId(this, new ZendeskCallback<String>() {
             @Override
@@ -74,7 +73,7 @@ public class RegistrationIntentService extends IntentService {
                 final AuthenticationType authentication = ZendeskConfig.INSTANCE.getSettings().getSdkSettings().getAuthentication();
 
                 if (authentication != null) {
-                    ZendeskConfig.INSTANCE.enablePush(result, new ZendeskCallback<PushRegistrationResponse>() {
+                    ZendeskConfig.INSTANCE.enablePushWithIdentifier(result, new ZendeskCallback<PushRegistrationResponse>() {
                         @Override
                         public void onSuccess(PushRegistrationResponse result) {
                             Logger.d(LOG_TAG, "Successfully sent push token to zendesk:  " + result.getIdentifier());
