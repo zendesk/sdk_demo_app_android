@@ -4,5 +4,8 @@
     <!-- https://github.com/square/okio/issues/58 -->
     <issue id="InvalidPackage">
         <ignore regexp="okio"/>
+
+        <!-- zendesk_java_common references to java.awt, what is not available in Android-->
+        <ignore regexp="java.awt.*"/>
     </issue>
 </lint>

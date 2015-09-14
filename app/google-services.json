@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_id": "push-zd-rememberthedate-141752384186",
+    "project_number": "141752384186",
+    "name": "Remember The Date"
+  },
+  "client": [
+    {
+      "client_info": {
+        "client_id": "android:com.zendesk.rememberthedate",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "com.zendesk.rememberthedate"
+        }
+      },
+      "oauth_client": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 2,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 1
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ]
+}
