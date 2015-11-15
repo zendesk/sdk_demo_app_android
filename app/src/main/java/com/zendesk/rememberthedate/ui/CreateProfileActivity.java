@@ -11,7 +11,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +25,7 @@ import com.zendesk.logger.Logger;
 import com.zendesk.rememberthedate.R;
 import com.zendesk.rememberthedate.model.UserProfile;
 import com.zendesk.rememberthedate.storage.UserProfileStorage;
-import com.zendesk.sdk.model.network.JwtIdentity;
+import com.zendesk.sdk.model.access.JwtIdentity;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
 import com.zendesk.util.StringUtils;
 import com.zopim.android.sdk.api.ZopimChat;
@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class CreateProfileActivity extends ActionBarActivity {
+public class CreateProfileActivity extends AppCompatActivity {
 
     private UserProfileStorage mUserProfileStorage;
     private PlaceholderFragment mPlaceHolderFragment;

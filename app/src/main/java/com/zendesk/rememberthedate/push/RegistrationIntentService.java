@@ -1,5 +1,6 @@
 package com.zendesk.rememberthedate.push;
 
+
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +9,8 @@ import android.widget.Toast;
 import com.zendesk.logger.Logger;
 import com.zendesk.rememberthedate.R;
 import com.zendesk.rememberthedate.storage.PushNotificationStorage;
-import com.zendesk.sdk.model.AuthenticationType;
-import com.zendesk.sdk.model.network.PushRegistrationResponse;
+import com.zendesk.sdk.model.access.AuthenticationType;
+import com.zendesk.sdk.model.push.PushRegistrationResponse;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
 import com.zendesk.service.ErrorResponse;
 import com.zendesk.service.ZendeskCallback;
