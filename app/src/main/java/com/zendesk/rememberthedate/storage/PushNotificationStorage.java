@@ -2,8 +2,6 @@ package com.zendesk.rememberthedate.storage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 
 public class PushNotificationStorage {
 
@@ -35,7 +33,6 @@ public class PushNotificationStorage {
     }
 
     public void clear(){
-        mStorage.edit().clear().commit();
+        mStorage.edit().clear().apply();
     }
-
 }

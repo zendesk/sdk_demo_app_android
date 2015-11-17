@@ -34,7 +34,7 @@ public class UserProfileStorage {
 
         if (avatar != null) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            avatar.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            avatar.compress(Bitmap.CompressFormat.PNG, 42, baos);
             byte[] b = baos.toByteArray();
 
             base64Avatar = Base64.encodeToString(b, Base64.DEFAULT);
@@ -45,7 +45,6 @@ public class UserProfileStorage {
                 .putString(EMAIL_KEY, email)
                 .putString(IMAGE_DATA_KEY, base64Avatar)
                 .apply();
-
     }
 
     public UserProfile getProfile() {

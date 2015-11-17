@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,7 +31,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 
-public class CreateDateActivity extends ActionBarActivity {
+public class CreateDateActivity extends AppCompatActivity {
 
     String   key;
 
