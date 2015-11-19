@@ -1,9 +1,4 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-//
-ext {
-    repoUsername = System.getenv("zdRepoUsername") ?: rootProject.hasProperty('zdRepoUsername') ? rootProject.properties['zdRepoUsername'] : ''
-    repoPassword = System.getenv("zdRepoPassword") ?: rootProject.hasProperty('zdRepoPassword') ? rootProject.properties['zdRepoPassword'] : ''
-}
 
 buildscript {
     repositories {
@@ -21,15 +16,6 @@ allprojects {
 
         maven {
             url 'https://zendesk.artifactoryonline.com/zendesk/repo'
-        }
-
-        maven {
-            credentials {
-                username rootProject.ext.repoUsername
-                password rootProject.ext.repoPassword
-            }
-
-            url 'https://zdrepo.artifactoryonline.com/zdrepo/repo/'
         }
     }
 }
