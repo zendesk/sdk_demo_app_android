@@ -3,7 +3,6 @@ package com.zendesk.rememberthedate;
 import android.app.Application;
 import android.util.Log;
 
-import com.zendesk.logger.Logger;
 import com.zopim.android.sdk.api.ZopimChat;
 
 public class Global extends Application {
