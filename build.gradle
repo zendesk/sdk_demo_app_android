@@ -14,8 +14,8 @@ allprojects {
     repositories {
         jcenter()
 
-        repositories {
-            maven { url 'https://zendesk.artifactoryonline.com/zendesk/repo' }
+        maven {
+            url 'https://zendesk.artifactoryonline.com/zendesk/repo'
         }
     }
 }

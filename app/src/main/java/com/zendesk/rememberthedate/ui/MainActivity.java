@@ -15,10 +15,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.zendesk.logger.Logger;
 import com.zendesk.rememberthedate.BuildConfig;
@@ -29,15 +28,11 @@ import com.zendesk.rememberthedate.push.RegistrationIntentService;
 import com.zendesk.rememberthedate.storage.PushNotificationStorage;
 import com.zendesk.rememberthedate.storage.UserProfileStorage;
 import com.zendesk.sdk.feedback.impl.BaseZendeskFeedbackConfiguration;
-import com.zendesk.sdk.model.AuthenticationType;
-import com.zendesk.sdk.model.CustomField;
 import com.zendesk.sdk.model.DeviceInfo;
 import com.zendesk.sdk.model.MemoryInformation;
-import com.zendesk.sdk.model.network.JwtIdentity;
-import com.zendesk.sdk.model.network.PushRegistrationResponse;
+import com.zendesk.sdk.model.access.JwtIdentity;
+import com.zendesk.sdk.model.request.CustomField;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
-import com.zendesk.service.ErrorResponse;
-import com.zendesk.service.ZendeskCallback;
 import com.zendesk.util.FileUtils;
 import com.zendesk.util.StringUtils;
 import com.zopim.android.sdk.api.ZopimChat;
@@ -47,10 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import retrofit.client.Response;
 
-
-public class MainActivity extends ActionBarActivity implements ActionBar.TabListener, DateFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements ActionBar.TabListener, DateFragment.OnFragmentInteractionListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     
@@ -88,7 +81,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Logger.setLoggable(true);
         initialiseSdk();
 
         // Set up the action bar.

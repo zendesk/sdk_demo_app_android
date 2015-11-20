@@ -53,12 +53,10 @@ public class GcmUtil {
                 ErrorResponse errorResponse = null;
 
                 try {
-                    final String token = instanceID.getToken(context.getString(R.string.gcm_defaultSenderId), GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-                    identifier = token;
+                    identifier = instanceID.getToken(context.getString(R.string.gcm_defaultSenderId), GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 
                 } catch (IOException e) {
                     errorResponse = new ErrorResponseAdapter(e.getLocalizedMessage());
-
                 }
 
                 return new Pair<>(identifier, errorResponse);
@@ -77,5 +75,4 @@ public class GcmUtil {
 
         }.execute();
     }
-
 }

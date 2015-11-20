@@ -35,4 +35,6 @@
     
     <string name="push_notification_fallback_title">Someone replied to your ticket</string>
 
+    <string name="push_date_title">Remember the Date</string>
+
 </resources>
