@@ -27,7 +27,6 @@ import com.zendesk.rememberthedate.push.GcmUtil;
 import com.zendesk.rememberthedate.push.RegistrationIntentService;
 import com.zendesk.rememberthedate.storage.PushNotificationStorage;
 import com.zendesk.rememberthedate.storage.UserProfileStorage;
-import com.zendesk.sdk.feedback.impl.BaseZendeskFeedbackConfiguration;
 import com.zendesk.sdk.model.DeviceInfo;
 import com.zendesk.sdk.model.MemoryInformation;
 import com.zendesk.sdk.model.access.JwtIdentity;
@@ -133,15 +132,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     void initialiseSdk() {
         mStorage = new UserProfileStorage(this);
         mPushStorage = new PushNotificationStorage(this);
-
-        ZendeskConfig.INSTANCE.init(this, getResources().getString(R.string.zd_url), getResources().getString(R.string.zd_appid), getResources().getString(R.string.zd_oauth));
-
-        ZendeskConfig.INSTANCE.setContactConfiguration(new BaseZendeskFeedbackConfiguration() {
-            @Override
-            public String getRequestSubject() {
-                return "Save The Date";
-            }
-        });
 
         final UserProfile profile = mStorage.getProfile();
         if (StringUtils.hasLength(profile.getEmail())){
