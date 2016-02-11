@@ -3,6 +3,8 @@ package com.zendesk.rememberthedate;
 import android.app.Application;
 import android.util.Log;
 
+import com.zendesk.sdk.feedback.impl.BaseZendeskFeedbackConfiguration;
+import com.zendesk.sdk.network.impl.ZendeskConfig;
 import com.zopim.android.sdk.api.ZopimChat;
 
 public class Global extends Application {
@@ -18,6 +20,15 @@ public class Global extends Application {
             Log.w(LOG_TAG, "Zopim chat is not connected to an account, if you wish to try chat please add your Zopim accountId to 'zd.xml'");
             Log.w(LOG_TAG, "==============================================================================================================");
         }
+
+        ZendeskConfig.INSTANCE.init(this, getResources().getString(R.string.zd_url), getResources().getString(R.string.zd_appid), getResources().getString(R.string.zd_oauth));
+
+        ZendeskConfig.INSTANCE.setContactConfiguration(new BaseZendeskFeedbackConfiguration() {
+            @Override
+            public String getRequestSubject() {
+                return "Save The Date";
+            }
+        });
 
         ZopimChat.init(getString(R.string.zopim_account_id)).build();
     }
