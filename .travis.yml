@@ -1,9 +1,13 @@
 language: android
 sudo: false
+jdk:
+  - oraclejdk8
 android:
   components:
+  - tools
+  - platform-tools
   - android-23
-  - build-tools-23.0.1
+  - build-tools-23.0.2
   - extra-android-m2repository
   - extra-google-m2repository
   - extra-google-google_play_services

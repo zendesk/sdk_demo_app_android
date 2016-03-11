@@ -30,6 +30,6 @@ public class Global extends Application {
             }
         });
 
-        ZopimChat.init(getString(R.string.zopim_account_id)).build();
+        ZopimChat.init(getString(R.string.zopim_account_id));
     }
 }
