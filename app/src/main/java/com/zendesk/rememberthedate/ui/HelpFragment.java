@@ -90,7 +90,8 @@ public class HelpFragment extends Fragment {
                             }
                         })
                         .withDontRemindMeAgainButton()
-                        .build().showAlways(getActivity());
+                        .build()
+                        .showAlways(getActivity());
             }
         }, ctx));
 
