@@ -15,8 +15,6 @@ import com.zendesk.sdk.network.impl.ZendeskConfig;
 import com.zendesk.service.ErrorResponse;
 import com.zendesk.service.ZendeskCallback;
 
-import retrofit.client.Response;
-
 public class RegistrationIntentService extends IntentService {
 
     private final static String LOG_TAG = RegistrationIntentService.class.getSimpleName();
@@ -42,9 +40,9 @@ public class RegistrationIntentService extends IntentService {
                 final boolean hasPushIdentifier = mPushStorage.hasPushIdentifier();
 
                 if (hasPushIdentifier) {
-                    ZendeskConfig.INSTANCE.disablePush(mPushStorage.getPushIdentifier(), new ZendeskCallback<Response>() {
+                    ZendeskConfig.INSTANCE.disablePush(mPushStorage.getPushIdentifier(), new ZendeskCallback<Void>() {
                         @Override
-                        public void onSuccess(final Response response) {
+                        public void onSuccess(final Void response) {
                             Logger.d(LOG_TAG, "Successfully unregistered");
                             enablePush(mPushStorage);
                         }

@@ -27,9 +27,9 @@ import com.zendesk.sdk.model.request.CommentResponse;
 import com.zendesk.sdk.model.request.CommentsResponse;
 import com.zendesk.sdk.model.request.Request;
 import com.zendesk.sdk.model.request.User;
+import com.zendesk.sdk.network.RequestProvider;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
 import com.zendesk.sdk.network.impl.ZendeskPicassoProvider;
-import com.zendesk.sdk.network.impl.ZendeskRequestProvider;
 import com.zendesk.sdk.ui.ZendeskPicassoTransformationFactory;
 import com.zendesk.service.ErrorResponse;
 import com.zendesk.service.ZendeskCallback;
@@ -74,7 +74,7 @@ public class ZendeskGcmListenerService extends GcmListenerService {
             ZendeskConfig.INSTANCE.init(this, getResources().getString(R.string.zd_url), getResources().getString(R.string.zd_appid), getResources().getString(R.string.zd_oauth));
         }
 
-        final ZendeskRequestProvider requestProvider = new ZendeskRequestProvider();
+        final RequestProvider requestProvider = ZendeskConfig.INSTANCE.provider().requestProvider();
 
         // To take advantage of the highly customable notifications on Android, we will try to download
         // some extra information. First we will download all comments associated with this request.
