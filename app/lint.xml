@@ -7,5 +7,7 @@
 
         <!-- zendesk_java_common references to java.awt, what is not available in Android-->
         <ignore regexp="java.awt.*"/>
+
+        <ignore regexp="java.lang.invoke"/>
     </issue>
 </lint>
