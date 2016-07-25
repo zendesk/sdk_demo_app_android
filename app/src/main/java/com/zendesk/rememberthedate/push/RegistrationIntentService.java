@@ -69,7 +69,7 @@ public class RegistrationIntentService extends IntentService {
             @Override
             public void onSuccess(final String result) {
 
-                final AuthenticationType authentication = ZendeskConfig.INSTANCE.getSettings().getSdkSettings().getAuthentication();
+                final AuthenticationType authentication = ZendeskConfig.INSTANCE.getMobileSettings().getAuthenticationType();
 
                 if (authentication != null) {
                     ZendeskConfig.INSTANCE.enablePushWithIdentifier(result, new ZendeskCallback<PushRegistrationResponse>() {

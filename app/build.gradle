@@ -52,7 +52,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
 
     compile group: 'com.zopim.android', name: 'sdk', version: '1.3.0.1'
-    compile group: 'com.zendesk', name: 'sdk', version: '1.6.1.1'
+    compile group: 'com.zendesk', name: 'sdk', version: '2.0.0.1-RC1'
 }
 
 apply plugin: 'com.google.gms.google-services'
