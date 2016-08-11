@@ -6,6 +6,7 @@
 
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorSecondary</item>
+        <item name="colorAccent">@color/colorAccent</item>
 
         <item name="RateMyAppPaddingTop">@dimen/rma_padding_top</item>
         <item name="RateMyAppPaddingBottom">@dimen/rma_padding_bottom</item>

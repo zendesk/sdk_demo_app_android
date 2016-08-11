@@ -213,7 +213,7 @@ public class ZendeskGcmListenerService extends GcmListenerService {
         final PendingIntent contentIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, requestIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         final Notification notification = new NotificationCompat.Builder(getApplicationContext())
-                .setSmallIcon(com.zendesk.sdk.R.drawable.ic_conversations)
+                .setSmallIcon(com.zendesk.sdk.R.drawable.ic_list_light)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setContentTitle(getResources().getString(R.string.app_name))
                 .setContentText(getResources().getString(R.string.push_notification_fallback_title))
