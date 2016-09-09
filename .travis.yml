@@ -6,7 +6,7 @@ android:
   components:
   - tools
   - platform-tools
-  - android-23
+  - android-24
   - build-tools-23.0.3
   - extra-android-m2repository
   - extra-google-m2repository
