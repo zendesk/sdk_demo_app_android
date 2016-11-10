@@ -8,8 +8,8 @@ android {
         applicationId "com.zendesk.rememberthedate"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 11
-        versionName "1.6"
+        versionCode 12
+        versionName "1.12"
     }
 
     signingConfigs {
