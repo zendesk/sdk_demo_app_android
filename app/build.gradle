@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 23
     buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.zendesk.rememberthedate"
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 23
         versionCode 11
         versionName "1.6"
     }
@@ -48,11 +48,25 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v13:24.2.0'
+    compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:recyclerview-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
+
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
 
-    compile group: 'com.zopim.android', name: 'sdk', version: '1.3.0.1'
-    compile group: 'com.zendesk', name: 'sdk', version: '1.7.1.1'
+    compile (group: 'com.zopim.android', name: 'sdk', version: '1.3.0.1') {
+        exclude module: 'support-v4'
+        exclude module: 'appcompat-v7'
+        exclude module: 'recyclerview-v7'
+        exclude module: 'design'
+    }
+    compile (group: 'com.zendesk', name: 'sdk', version: '1.7.3.1') {
+        exclude module: 'support-v4'
+        exclude module: 'appcompat-v7'
+        exclude module: 'recyclerview-v7'
+        exclude module: 'design'
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'
