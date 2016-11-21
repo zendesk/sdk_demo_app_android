@@ -7,7 +7,7 @@ import android.support.v4.util.Pair;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.zendesk.rememberthedate.R;
@@ -25,14 +25,15 @@ public class GcmUtil {
     /**
      * Check if play services are installed and use able.
      *
-     * @param activity  An activity
-     * @return          True if the device support push notifications, false if not.
+     * @param activity An activity
+     * @return True if the device support push notifications, false if not.
      */
     public static boolean checkPlayServices(Activity activity) {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, activity, PLAY_SERVICES_RESOLUTION_REQUEST).show();
+        final GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int errorCode = apiAvailability.isGooglePlayServicesAvailable(activity);
+        if (errorCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(errorCode)) {
+                apiAvailability.getErrorDialog(activity, errorCode, PLAY_SERVICES_RESOLUTION_REQUEST).show();
             } else {
                 Toast.makeText(activity, R.string.push_error_device_not_compatible, Toast.LENGTH_SHORT).show();
             }
@@ -42,8 +43,8 @@ public class GcmUtil {
     }
 
 
-    public static void getInstanceId(final Context context, final ZendeskCallback<String> callback){
-        final  InstanceID instanceID = InstanceID.getInstance(context);
+    static void getInstanceId(final Context context, final ZendeskCallback<String> callback) {
+        final InstanceID instanceID = InstanceID.getInstance(context);
 
         new AsyncTask<Void, Void, Pair<String, ErrorResponse>>() {
             @Override
@@ -64,10 +65,10 @@ public class GcmUtil {
 
             @Override
             protected void onPostExecute(final Pair<String, ErrorResponse> result) {
-                if(callback != null){
-                    if(StringUtils.hasLength(result.first)){
+                if (callback != null) {
+                    if (StringUtils.hasLength(result.first)) {
                         callback.onSuccess(result.first);
-                    }else{
+                    } else {
                         callback.onError(result.second);
                     }
                 }
