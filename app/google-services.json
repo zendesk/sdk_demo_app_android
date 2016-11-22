@@ -1,38 +1,42 @@
 {
   "project_info": {
-    "project_id": "push-zd-rememberthedate-141752384186",
     "project_number": "141752384186",
-    "name": "Remember The Date"
+    "firebase_url": "https://push-zd-rememberthedate.firebaseio.com",
+    "project_id": "push-zd-rememberthedate",
+    "storage_bucket": "push-zd-rememberthedate.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "client_id": "android:com.zendesk.rememberthedate",
-        "client_type": 1,
+        "mobilesdk_app_id": "1:141752384186:android:85f0a2616773978e",
         "android_client_info": {
           "package_name": "com.zendesk.rememberthedate"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "141752384186-ervogmep7br6kacu55b2183s7gh60qit.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAF-TLbmxdRIV3Omqou0QGOFV0lhWxYrQ8"
+        }
+      ],
       "services": {
         "analytics_service": {
           "status": 1
-        },
-        "cloud_messaging_service": {
-          "status": 2,
-          "apns_config": []
         },
         "appinvite_service": {
           "status": 1,
           "other_platform_oauth_client": []
         },
-        "google_signin_service": {
-          "status": 1
-        },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }
-  ]
+  ],
+  "configuration_version": "1"
 }
