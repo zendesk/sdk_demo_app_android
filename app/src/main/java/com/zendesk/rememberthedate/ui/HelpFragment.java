@@ -129,13 +129,13 @@ public class HelpFragment extends Fragment {
 
         return rootView;
     }
-    
+
     class AuthOnClickWrapper implements View.OnClickListener {
-        
+
         private View.OnClickListener mOnClickListener;
         private UserProfileStorage mUserProfileStorage;
         private Context mContext;
-        
+
         public AuthOnClickWrapper(View.OnClickListener onClickListener, Context context){
             this.mOnClickListener = onClickListener;
             this.mUserProfileStorage = new UserProfileStorage(context);
@@ -145,7 +145,7 @@ public class HelpFragment extends Fragment {
         @Override
         public void onClick(View v) {
             final UserProfile profile = mUserProfileStorage.getProfile();
-            
+
             if(StringUtils.hasLength(profile.getEmail())){
                 mOnClickListener.onClick(v);
             }else{

@@ -3,7 +3,7 @@
 Implementing push notifications for your app consists of two steps. First, you need to get your push backend up and running ([Android SDK - Push Notifications](https://developer.zendesk.com/embeddables/docs/android/push_notifications)). Second, you need to update your existing Android app to receive and handle messages issued by Google Cloud Messaging (GCM).
 
 This guide focuses on how the Remember the Date app implements push ([Github](https://github.com/zendesk/sdk_demo_app_android), [Google Play](https://play.google.com/store/apps/details?id=com.zendesk.rememberthedate)).
-This is just one way of implementing push.  
+This is just one way of implementing push.
 
 ### Implementing GCM Client on Android
 
@@ -15,7 +15,7 @@ During the registration process, you'll receive a registration ID. Use this ID t
 ZendeskConfig.INSTANCE.enablePush("{registrationId}", new ZendeskCallback<PushRegistrationResponse>() {
     @Override
     public void onSuccess(PushRegistrationResponse pushRegistrationResponse) {
-                
+
     }
 
     @Override
@@ -48,7 +48,7 @@ To get the most out of Android’s notifications in our app, we aim to do the fo
 3. Open the updated ticket, if the user clicks on the notification
   1. If the request is shown to the user, trigger a refresh
 4. Handle notifications for multiple requests
-  1. Show only one notification per updated request 
+  1. Show only one notification per updated request
   2. Update already exsisting notification
 
 #### Refresh the comment stream
@@ -75,14 +75,14 @@ To download the latest comment, we use the following provider function:
 
 ```java
 ...
-// RequestProvider:    
+// RequestProvider:
 public void getComments(String requestId, ZendeskCallback<CommentsResponse> callback);
 ...
 ```
-The callback passed into `getComments()` returns a `CommentsResponse`, which contains a list of comments and users. 
+The callback passed into `getComments()` returns a `CommentsResponse`, which contains a list of comments and users.
 
 ##### Request details
-To get more detailed information about the request, we use the following provider method:  
+To get more detailed information about the request, we use the following provider method:
 
 ```java
 ...
@@ -92,7 +92,7 @@ public void getRequest(String requestId, ZendeskCallback<Request> callback);
 ```
 
 ##### Fetching the agent’s avatar picture
-We'll need the agent’s avatar picture as a `Bitmap` to put it into an Android notification. You'll find the URL pointing to the picture in the `User` object. 
+We'll need the agent’s avatar picture as a `Bitmap` to put it into an Android notification. You'll find the URL pointing to the picture in the `User` object.
 Because `User#getPhoto()` could be `null`, make sure you provide a fallback picture.
 
 We use [Picasso](http://square.github.io/picasso/) to download a Bitmap:
@@ -107,12 +107,12 @@ RequestCreator requestCreator = ZendeskPicassoProvider.getInstance(getApplicatio
 requestCreator.into(new Target() {
     @Override
     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-    	// show notification
+        // show notification
     }
 
     @Override
     public void onBitmapFailed(Drawable errorDrawable) {
-    	// show notification, provide a default image
+        // show notification, provide a default image
     }
 
     @Override
@@ -127,7 +127,7 @@ requestCreator.into(new Target() {
 |||
 |-----------------|----------------------------------------|
 | User            | Detailed user information              |
-| CommentResponse | The newest comments                    |             
+| CommentResponse | The newest comments                    |
 | Request         | Detailed information about the request |
 | Bitmap          | The user's avatar                      |
 
@@ -149,15 +149,15 @@ We want to show the updated request as a response to a notification.
 Therefore we use the SDK’s deep-linking functionality. We aquire an Intent by calling `ZendeskDeepLinking.INSTANCE.getRequestIntent()`, wrap it into a ```PendingIntent```, and put it into the notification.
 
 ###### Deep linking
-Before invoking `getRequestIntent()`, we make sure our `ZendeskConfig` is initialized. 
+Before invoking `getRequestIntent()`, we make sure our `ZendeskConfig` is initialized.
 The Intent could be fired at some point in the future. During this time, Android could kill our app. When opening a request, deep linking has to make sure that `ZendeskConfig` is initialized.
 So, if you're using deep linking in an `IntentService` for example, check if your `ZendeskConfig` is configured or use the `getRequestIntent` function, which accepts a Zendesk URL, application ID, and oAuth client ID.
 
 
-To be compliant with the Android design guidelines, we have to provide a proper back stack of activities, after the user navigates back from viewing the request. 
-`getRequestIntent()` automatically opens list of requests after the user presses back. 
+To be compliant with the Android design guidelines, we have to provide a proper back stack of activities, after the user navigates back from viewing the request.
+`getRequestIntent()` automatically opens list of requests after the user presses back.
 In the case of the Remember the Date app, the user should be forwarded to the `MainActivity` displaying the `HelpFragment`.
-To achieve that, we create an Intent for MainActivity, put it into a list, and pass it to `getRequestIntent()`. 
+To achieve that, we create an Intent for MainActivity, put it into a list, and pass it to `getRequestIntent()`.
 
 ```java
 ...
@@ -170,7 +170,7 @@ backStackItems.add(mainActivity);
 ```
 
 In addition, a fallback activity can be provided and it will be shown if deep linking fails.
-It’s unlikely, but can happen if the user configuration changes, for example. 
+It’s unlikely, but can happen if the user configuration changes, for example.
 
 ###### Create a PendingIntent
 After receiving an Intent from `ZendeskDeepLinking`, we have to wrap it in a PendingIntent. To do that, we need to provide an ID and flags. We can use them to handle notification for multiple request properly.
