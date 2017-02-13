@@ -13,19 +13,23 @@ android {
     }
 
     signingConfigs {
-        release {
-            storeFile file("../scripts/rtd.jks")
-            storePassword System.getenv("RTD_STORE_PASS")
-            keyAlias System.getenv("RTD_ALIAS")
-            keyPassword System.getenv("RTD_KEY_PASS")
+        if (file("../scripts/rtd.jks").exists()) {
+            release {
+                storeFile file("../scripts/rtd.jks")
+                storePassword System.getenv("RTD_STORE_PASS")
+                keyAlias System.getenv("RTD_ALIAS")
+                keyPassword System.getenv("RTD_KEY_PASS")
+            }
         }
     }
 
     buildTypes {
-        release {
-            signingConfig signingConfigs.release
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard/zendesk-sdk.pro', 'proguard/zendesk-chat-sdk.pro'
+        if (file("../scripts/rtd.jks").exists()) {
+            release {
+                signingConfig signingConfigs.release
+                minifyEnabled true
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard/zendesk-sdk.pro', 'proguard/zendesk-chat-sdk.pro'
+            }
         }
     }
 
@@ -38,11 +42,6 @@ android {
     packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
-    }
-
-    dexOptions {
-        javaMaxHeapSize "4g"
-        preDexLibraries = false
     }
 }
 
