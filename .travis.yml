@@ -16,10 +16,8 @@ android:
   licenses:
   - android-sdk-license-[0-9a-f]{8}
 script: ./scripts/buildApp.sh
-before_install:
-- openssl aes-256-cbc -K $encrypted_218b70c0d15d_key -iv $encrypted_218b70c0d15d_iv
-  -in scripts/rtd.jks.enc -out scripts/rtd.jks -d
 before_deploy:
+ - openssl aes-256-cbc -K $encrypted_218b70c0d15d_key -iv $encrypted_218b70c0d15d_iv -in scripts/rtd.jks.enc -out scripts/rtd.jks -d
  - ./scripts/before_deploy.sh
 env:
   global:
