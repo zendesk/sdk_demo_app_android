@@ -45,7 +45,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener, DateFragment.OnFragmentInteractionListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    
+
     public static final String EXTRA_VIEWPAGER_POSITION = "extra_viewpager_pos";
     public static final int VIEWPAGER_POS_DATES = 0;
     public static final int VIEWPAGER_POS_HELP = 1;
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             enablePush();
         }
     }
-    
+
     void enablePush(){
         if(GcmUtil.checkPlayServices(this)){
             RegistrationIntentService.start(this);
