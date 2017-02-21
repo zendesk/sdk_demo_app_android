@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/zendesk/sdk_demo_app_android.svg?branch=master)](https://travis-ci.org/zendesk/sdk_demo_app_android)
 
+The build is passing, but is it really?
+
 # Zendesk Mobile SDK Android Demo app
 
 The "Remember the Date" demo app demonstrates how to use the Zendesk Mobile SDK to build native support into your mobile application.
