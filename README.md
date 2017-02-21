@@ -15,7 +15,7 @@ The "Remember the Date" demo app demonstrates how to use the Zendesk Mobile SDK 
 
 Please submit bug reports to [Zendesk](https://rememberthedate.zendesk.com/requests/new). Pull requests are welcome.
 
-### Licence:
+### Licence
 
 By downloading or using the Zendesk Mobile SDK, You agree to the Zendesk Master
 Subscription Agreement https://www.zendesk.com/company/customers-partners/#master-subscription-agreement and Application Developer and API License
