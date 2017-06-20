@@ -50,13 +50,13 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     public static final int VIEWPAGER_POS_DATES = 0;
     public static final int VIEWPAGER_POS_HELP = 1;
 
-    private static final long TICKET_FORM_ID = 62599l;
-    private static final long TICKET_FIELD_APP_VERSION = 24328555l;
-    private static final long TICKET_FIELD_OS_VERSION = 24273979l;
-    private static final long TICKET_FIELD_DEVICE_MODEL = 24273989l;
-    private static final long TICKET_FIELD_DEVICE_MEMORY = 24273999;
-    private static final long TICKET_FIELD_DEVICE_FREE_SPACE = 24274009l;
-    private static final long TICKET_FIELD_DEVICE_BATTERY_LEVEL = 24274019l;
+    private static final long TICKET_FORM_ID = 62599L;
+    private static final long TICKET_FIELD_APP_VERSION = 24328555L;
+    private static final long TICKET_FIELD_OS_VERSION = 24273979L;
+    private static final long TICKET_FIELD_DEVICE_MODEL = 24273989L;
+    private static final long TICKET_FIELD_DEVICE_MEMORY = 24273999L;
+    private static final long TICKET_FIELD_DEVICE_FREE_SPACE = 24274009L;
+    private static final long TICKET_FIELD_DEVICE_BATTERY_LEVEL = 24274019L;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
