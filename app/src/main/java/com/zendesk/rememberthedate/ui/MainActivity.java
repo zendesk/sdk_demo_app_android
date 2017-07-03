@@ -27,8 +27,7 @@ import com.zendesk.rememberthedate.push.GcmUtil;
 import com.zendesk.rememberthedate.push.RegistrationIntentService;
 import com.zendesk.rememberthedate.storage.PushNotificationStorage;
 import com.zendesk.rememberthedate.storage.UserProfileStorage;
-import com.zendesk.sdk.model.DeviceInfo;
-import com.zendesk.sdk.model.MemoryInformation;
+import com.zendesk.sdk.network.impl.DeviceInfo;
 import com.zendesk.sdk.model.access.JwtIdentity;
 import com.zendesk.sdk.model.request.CustomField;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
@@ -40,6 +39,7 @@ import com.zopim.android.sdk.model.VisitorInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener, DateFragment.OnFragmentInteractionListener {
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         mPushStorage = new PushNotificationStorage(this);
 
         final UserProfile profile = mStorage.getProfile();
-        if (StringUtils.hasLength(profile.getEmail())){
+        if (StringUtils.hasLength(profile.getEmail())) {
             Logger.i("Identity", "Setting identity");
             ZendeskConfig.INSTANCE.setIdentity(new JwtIdentity(profile.getEmail()));
 
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             final VisitorInfo.Builder build = new VisitorInfo.Builder()
                     .email(profile.getEmail());
 
-            if(StringUtils.hasLength(profile.getName())){
+            if (StringUtils.hasLength(profile.getName())) {
                 build.name(profile.getName());
             }
 
@@ -154,8 +154,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     }
 
     private List<CustomField> getCustomFields(){
-        final DeviceInfo deviceInfo = new DeviceInfo(this);
-        final MemoryInformation memoryInformation = new MemoryInformation(this);
+        final Map deviceInfo = new DeviceInfo(this).getDeviceInfoAsMapForMetaData();
 
         final String appVersion = String.format(
                 Locale.US,
@@ -166,13 +165,22 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         final String osVersion = String.format(
                 Locale.US,
                 "Android %s, Version %s",
-                deviceInfo.getVersionName(), deviceInfo.getVersionCode()
+                deviceInfo.get("device_os"), deviceInfo.get("device_api")
         );
 
         final String deviceModel = String.format(
                 Locale.US,
                 "%s, %s, %s",
-                deviceInfo.getModelName(), deviceInfo.getModelDeviceName(), deviceInfo.getModelManufacturer()
+                deviceInfo.get("device_model"), deviceInfo.get("device_name"), deviceInfo.get("device_manufacturer")
+        );
+
+        final int totalMemory = bytesToMegabytes(Long.parseLong(deviceInfo.get("device_total_memory").toString()));
+        final int usedMemory = bytesToMegabytes(Long.parseLong(deviceInfo.get("device_used_memory").toString()));
+        final String memoryUsage = String.format(
+                Locale.US,
+                this.getString(R.string.rate_my_app_dialog_feedback_device_memory),
+                totalMemory,
+                usedMemory
         );
 
         final StatFs stat = new StatFs(Environment.getDataDirectory().getPath());
@@ -185,11 +193,15 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         customFields.add(new CustomField(TICKET_FIELD_APP_VERSION, appVersion));
         customFields.add(new CustomField(TICKET_FIELD_OS_VERSION, osVersion));
         customFields.add(new CustomField(TICKET_FIELD_DEVICE_MODEL, deviceModel));
-        customFields.add(new CustomField(TICKET_FIELD_DEVICE_MEMORY, memoryInformation.formatMemoryUsage()));
+        customFields.add(new CustomField(TICKET_FIELD_DEVICE_MEMORY, memoryUsage));
         customFields.add(new CustomField(TICKET_FIELD_DEVICE_FREE_SPACE, freeSpace));
         customFields.add(new CustomField(TICKET_FIELD_DEVICE_BATTERY_LEVEL, batteryLevel));
 
         return customFields;
+    }
+
+    private int bytesToMegabytes(long bytes) {
+        return (int)(Math.round(bytes / 1024.0 / 1024.0));
     }
 
     public float getBatteryLevel() {
