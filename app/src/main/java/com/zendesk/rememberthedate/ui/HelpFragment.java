@@ -13,9 +13,7 @@ import android.view.ViewGroup;
 import com.zendesk.rememberthedate.R;
 import com.zendesk.rememberthedate.model.UserProfile;
 import com.zendesk.rememberthedate.storage.UserProfileStorage;
-import com.zendesk.sdk.feedback.ZendeskFeedbackConfiguration;
 import com.zendesk.sdk.feedback.ui.ContactZendeskActivity;
-import com.zendesk.sdk.rating.ui.RateMyAppDialog;
 import com.zendesk.sdk.requests.RequestActivity;
 import com.zendesk.sdk.support.SupportActivity;
 import com.zendesk.util.StringUtils;
@@ -23,8 +21,6 @@ import com.zopim.android.sdk.api.ZopimChat;
 import com.zopim.android.sdk.prechat.PreChatForm;
 import com.zopim.android.sdk.prechat.ZopimChatActivity;
 
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -78,33 +74,6 @@ public class HelpFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), RequestActivity.class);
                 startActivity(intent);
-            }
-        }, ctx));
-
-        rootView.findViewById(R.id.fragment_main_btn_rate_the_app).setOnClickListener(new AuthOnClickWrapper(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new RateMyAppDialog.Builder(getActivity())
-                        .withAndroidStoreRatingButton()
-                        .withSendFeedbackButton(new ZendeskFeedbackConfiguration() {
-                            @Override
-                            public String getRequestSubject() {
-                                return "Remember the date feedback";
-                            }
-
-                            @Override
-                            public List<String> getTags() {
-                                return Arrays.asList("tag1", "tag2");
-                            }
-
-                            @Override
-                            public String getAdditionalInfo() {
-                                return "Additional info.";
-                            }
-                        })
-                        .withDontRemindMeAgainButton()
-                        .build()
-                        .showAlways(getActivity());
             }
         }, ctx));
 
