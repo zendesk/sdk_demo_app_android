@@ -34,6 +34,7 @@ env:
     - secure: iT32cHpCue2TJvME/tJYjWR1TbyPJnTXzdaAuQ8FnIkZWBPhsWPZ5KLeUvsAKnsohSaD/qMw68s/NpEI9emob6xdsmML2IvyMK3EL7e8t60xnyYOM1RGOZXoP7XQ7G8+DB7GLx1O8YjNlAPQhR7LcoNKa9cKQ4iox0JfhQMM/BM=
     - secure: F09QUU7fDOZ9tIjB8k83s5PZYynIe6HI1ZxfUByTs1y6qnZvr40bBaI0hm7bNTcBDvtqhZuxxmuDCr29KWLDN1QH6ExJTUIx2ocAQ4kP9x2t2wr+eoMF19QQeNwqXZuvTa58EFA096hglom5/wLxdKsL8JjskRHekn2ARcK5ank=
 deploy:
+  skip_cleanup: true
   provider: releases
   api_key:
     secure: MNBI+eK7Aa4BCucvmxzzVlm/Tc4fyqdjv1iu5IqtjJc4vFUE3LvjBJ9d/lsQD89eavj8STMyONhbQ2+6JL6EKrfhulwwMVd5N//daLO9KA/xfEpIZO9z9RvP5VdqTDDTYrJ52HrB/MC+v5AqxxZUfk7XVjxRmAvefGWhVtlZ8CY=
