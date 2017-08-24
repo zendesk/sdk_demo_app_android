@@ -1,12 +1,14 @@
 package com.zendesk.rememberthedate.push;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -183,8 +185,15 @@ public class ZendeskGcmListenerService extends GcmListenerService {
 
         }
 
+        final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String channelId = getResources().getString(R.string.app_name);
+
+        createNotificationChannel(notificationManager, channelId);
+
+        final NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), channelId);
+
         // Put everything together.
-        final Notification notification = new NotificationCompat.Builder(getApplicationContext())
+        final Notification notification = notificationBuilder
                 .setContentTitle(request.getSubject())
                 .setContentText(spannableString)
                 .setSmallIcon(R.drawable.ic_conversations)
@@ -195,14 +204,33 @@ public class ZendeskGcmListenerService extends GcmListenerService {
                 .setContentIntent(contentIntent)
                 .build();
 
-
-        final NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
         // Show the notification.
         // Again, use request.getId().hashCode() as notification id.
-        mNotificationManager.notify(request.getId().hashCode(), notification);
+        notificationManager.notify(request.getId().hashCode(), notification);
     }
 
+    private void createNotificationChannel(NotificationManager notificationManager, String channelId) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            // Create the notification channel. As per the documentation, "Attempting to create an
+            // existing notification channel with its original values performs no operation, so it's safe
+            // to perform the above sequence of steps when starting an app."
+            // The user-visible name of the channel.
+            CharSequence name = getString(R.string.app_name);
+            // The user-visible description of the channel.
+            String description = getString(R.string.push_notification_fallback_title);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(channelId, name, importance);
+            // Configure the notification channel.
+            channel.setDescription(description);
+            channel.enableLights(true);
+            // Sets the notification light color for notifications posted to this
+            // channel, if the device supports this feature.
+            channel.setLightColor(Color.RED);
+            channel.enableVibration(true);
+            channel.setVibrationPattern(new long[]{100, 200, 100, 200});
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 
 
     private void fallbackNotification(String requestId){
