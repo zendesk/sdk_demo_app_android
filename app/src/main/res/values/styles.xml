@@ -8,9 +8,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <item name="RateMyAppPaddingTop">@dimen/rma_padding_top</item>
-        <item name="RateMyAppPaddingBottom">@dimen/rma_padding_bottom</item>
-
         <item name="android:textAppearance">@style/grey_text</item>
     </style>
 
@@ -27,96 +24,5 @@
         <item name="android:background">@color/colorPrimary</item>
         <item name="android:backgroundStacked">@color/colorSecondary</item>
     </style>
-
-    <!-- ++++++++++++++++ -->
-    <!-- Start dimensions -->
-    <!-- ++++++++++++++++ -->
-
-    <dimen name="rma_padding_top">24dp</dimen>
-    <dimen name="rma_padding_bottom">24dp</dimen>
-
-    <!-- ++++++++++++++++ -->
-    <!-- End dimensions -->
-    <!-- ++++++++++++++++ -->
-
-
-    <!-- +++++++++++++++++++++++++++++++++ -->
-    <!-- Start rate my app dialogue styles -->
-    <!-- +++++++++++++++++++++++++++++++++ -->
-
-    <style name="rma_button">
-        <item name="android:background">@color/light_background</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:lineSpacingMultiplier">1.25</item>
-    </style>
-
-    <style name="rma_title" parent="rma_button">
-        <item name="android:textSize">22sp</item>
-        <item name="android:background">@android:color/white</item>
-        <item name="android:lineSpacingMultiplier">1.25</item>
-    </style>
-
-    <style name="rma_divider">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1px</item>
-        <item name="android:background">@color/divider</item>
-    </style>
-
-    <!-- +++++++++++++++++++++++++++++++ -->
-    <!-- End rate my app dialogue styles -->
-    <!-- +++++++++++++++++++++++++++++++ -->
-
-    <!-- ++++++++++++++++++++++++++++++++++++++++++ -->
-    <!-- Start rate my app dialogue feedback styles -->
-    <!-- ++++++++++++++++++++++++++++++++++++++++++ -->
-
-    <style name="rma_feedback_issue_cancel_button" parent="_rma_feedback_issue_cancel_button">
-        <item name="android:background">@drawable/white_gradient_btn</item>
-        <item name="android:textColor">@color/grey_text</item>
-    </style>
-
-    <!--
-        This style overrides the parent style to change the background colour of the button
-        depending on the state
-    -->
-    <style name="rma_feedback_issue_send_button" parent="_rma_feedback_issue_send_button">
-        <item name="android:layout_marginLeft">8dp</item>
-        <item name="android:background">@drawable/green_gray_btn_selector</item> <!-- Button colour will change  -->
-        <item name="android:textColor">@color/green_gray_txt_selector</item>
-    </style>
-
-    <style name="rma_feedback_message_title" parent="_rma_feedback_message_title">
-        <item name="android:textColor">@color/grey_text</item>
-    </style>
-
-    <style name="rma_feedback_message_subtitle" parent="_rma_feedback_message_subtitle">
-        <item name="android:textColor">@color/grey_text</item>
-        <item name="android:lineSpacingMultiplier">1.25</item>
-    </style>
-
-    <!--
-        In this example we are overriding the parent style using a selector to control the colour
-        of the text differently whether the edittext is enabled or disabled.
-    -->
-    <style name="rma_feedback_issue_edittext" parent="_rma_feedback_issue_edittext">
-        <item name="android:textColor">@color/enabled_disabled_grey_selector</item>
-        <item name="android:textColorHint">@color/text_hint</item>
-    </style>
-
-
-    <style name="rma_feedback_divider" parent="_rma_feedback_divider">
-        <item name="android:background">@color/divider</item>
-    </style>
-
-
-    <style name="rma_feedback_progress" parent="_rma_feedback_progress">
-        <item name="android:indeterminateDrawable">@drawable/progress_green_small_holo</item>
-    </style>
-
-    <!-- ++++++++++++++++++++++++++++++++++++++++ -->
-    <!-- End rate my app dialogue feedback styles -->
-    <!-- ++++++++++++++++++++++++++++++++++++++++ -->
 
 </resources>
