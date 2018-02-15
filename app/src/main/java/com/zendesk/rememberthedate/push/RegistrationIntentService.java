@@ -9,7 +9,6 @@ import android.widget.Toast;
 import com.zendesk.logger.Logger;
 import com.zendesk.rememberthedate.R;
 import com.zendesk.rememberthedate.storage.PushNotificationStorage;
-import com.zendesk.sdk.model.access.AuthenticationType;
 import com.zendesk.sdk.model.push.PushRegistrationResponse;
 import com.zendesk.sdk.network.impl.ZendeskConfig;
 import com.zendesk.service.ErrorResponse;
@@ -64,28 +63,23 @@ public class RegistrationIntentService extends IntentService {
         });
     }
 
-    void enablePush(final PushNotificationStorage pushNotificationStorage){
+    void enablePush(final PushNotificationStorage pushNotificationStorage) {
         GcmUtil.getInstanceId(this, new ZendeskCallback<String>() {
             @Override
             public void onSuccess(final String result) {
+                ZendeskConfig.INSTANCE.enablePushWithIdentifier(result, new ZendeskCallback<PushRegistrationResponse>() {
+                    @Override
+                    public void onSuccess(PushRegistrationResponse result) {
+                        Logger.d(LOG_TAG, "Successfully sent push token to zendesk:  " + result.getIdentifier());
+                        pushNotificationStorage.storePushIdentifier(result.getIdentifier());
+                    }
 
-                final AuthenticationType authentication = ZendeskConfig.INSTANCE.getMobileSettings().getAuthenticationType();
-
-                if (authentication != null) {
-                    ZendeskConfig.INSTANCE.enablePushWithIdentifier(result, new ZendeskCallback<PushRegistrationResponse>() {
-                        @Override
-                        public void onSuccess(PushRegistrationResponse result) {
-                            Logger.d(LOG_TAG, "Successfully sent push token to zendesk:  " + result.getIdentifier());
-                            pushNotificationStorage.storePushIdentifier(result.getIdentifier());
-                        }
-
-                        @Override
-                        public void onError(ErrorResponse error) {
-                            pushNotificationStorage.clear();
-                            Logger.e(LOG_TAG, "Failed during enabling push notifications: " + error.getReason());
-                        }
-                    });
-                }
+                    @Override
+                    public void onError(ErrorResponse error) {
+                        pushNotificationStorage.clear();
+                        Logger.e(LOG_TAG, "Failed during enabling push notifications: " + error.getReason());
+                    }
+                });
             }
 
             @Override
