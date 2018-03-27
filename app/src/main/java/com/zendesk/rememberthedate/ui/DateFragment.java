@@ -1,274 +1,191 @@
 package com.zendesk.rememberthedate.ui;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import android.support.v4.app.ListFragment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import com.zendesk.rememberthedate.Global;
 import com.zendesk.rememberthedate.LocalNotification;
 import com.zendesk.rememberthedate.R;
-
-import org.json.JSONObject;
+import com.zendesk.rememberthedate.model.DateModel;
+import com.zendesk.rememberthedate.storage.AppStorage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
  * A fragment representing a list of Items.
- *
- * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
- * interface.
  */
-public class DateFragment extends ListFragment {
+public class DateFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
-    ArrayList<Item> data;
+    public static final String FRAGMENT_TITLE = "Date";
 
     public static DateFragment newInstance() {
-        DateFragment fragment = new DateFragment();
-        return fragment;
+        return new DateFragment();
     }
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public DateFragment() {
+    private AppStorage storage;
+    private RecyclerView recyclerView;
+    private DateAdapter dateAdapter;
+    private View emptyView;
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_date, container, false);
+        recyclerView = view.findViewById(R.id.date_list);
+        emptyView = view.findViewById(R.id.empty_view);
+        return view;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onStart() {
+        super.onStart();
+        storage = Global.getStorage(getActivity());
 
-        reloadAdapter();
+        dateAdapter = new DateAdapter(new OnDateClickListener() {
+            @Override
+            public void onClick(Item item) {
+                CreateDateActivity.start(getActivity(), item.id);
+            }
+
+            @Override
+            public void onLongClick(Item item) {
+                showRemoveDialog(item);
+            }
+        });
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        recyclerView.setAdapter(dateAdapter);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
         reloadAdapter();
     }
 
-    public void reloadAdapter()
-    {
-        Map<String, String> mapData    = loadMap("dates");
+    private void reloadAdapter() {
+        final Map<String, DateModel> mapData = storage.loadMapData();
+        final List<Item> data = new ArrayList<>();
 
-        data   = new ArrayList<>();
-
-        Iterator it = mapData.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pairs = (Map.Entry)it.next();
-            Item item   = new Item();
-            item.title  = pairs.getValue().toString();
-            item.id     = pairs.getKey().toString();
+        for (Map.Entry<String, DateModel> entry : mapData.entrySet()) {
+            Item item = new Item();
+            item.title = entry.getValue().getTitle();
+            item.id = entry.getKey();
             data.add(item);
         }
 
-        SimpleAdapter   adapter = new SimpleAdapter();
+        if (data.size() > 0) {
+            emptyView.setVisibility(View.INVISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+            dateAdapter.update(data);
 
-        setListAdapter(adapter);
-    }
-
-    private void saveMap(Map<String,String> inputMap, String key){
-        SharedPreferences pSharedPref = getActivity().getApplicationContext().getSharedPreferences("MyDates", Context.MODE_PRIVATE);
-        if (pSharedPref != null){
-            JSONObject jsonObject = new JSONObject(inputMap);
-            String jsonString = jsonObject.toString();
-            SharedPreferences.Editor editor = pSharedPref.edit();
-            editor.remove(key).apply();
-            editor.putString(key, jsonString);
-            editor.apply();
+        } else {
+            emptyView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.INVISIBLE);
         }
     }
 
-    private Map<String,String> loadMap(String Key){
-        Map<String,String> outputMap = new HashMap<>();
-        SharedPreferences pSharedPref = getActivity().getApplicationContext().getSharedPreferences("MyDates", Context.MODE_PRIVATE);
-        try{
-            if (pSharedPref != null){
-                String jsonString = pSharedPref.getString(Key, (new JSONObject()).toString());
-                JSONObject jsonObject = new JSONObject(jsonString);
-                Iterator<String> keysItr = jsonObject.keys();
-                while(keysItr.hasNext()) {
-                    String key = keysItr.next();
-                    String value = (String) jsonObject.get(key);
-                    outputMap.put(key, value);
-                }
-            }
-        }catch(Exception e){
-            e.printStackTrace();
+    private void showRemoveDialog(final Item item) {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+
+        // set title
+        alertDialogBuilder
+                .setTitle("Confirm")
+                .setMessage("Remove this date?")
+                .setCancelable(true)
+                .setPositiveButton("Yes", (dialog, id) -> {
+                    //data.remove(arg2);
+
+                    long millis = Long.parseLong(item.id);
+
+                    AlarmManager alarmManager = (AlarmManager) DateFragment.this.getActivity().getSystemService(Context.ALARM_SERVICE);
+                    Intent intent = new Intent(DateFragment.this.getActivity(), LocalNotification.class);
+                    intent.putExtra("message", item.title);
+
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(DateFragment.this.getActivity(), (int) millis, intent, PendingIntent.FLAG_ONE_SHOT);
+
+                    Map<String, DateModel> mapData = storage.loadMapData();
+                    mapData.remove(item.id);
+                    storage.storeMapData(mapData);
+
+                    alarmManager.cancel(pendingIntent);
+
+                    reloadAdapter();
+
+                })
+                .setNegativeButton("No", (dialogInterface, i) -> dialogInterface.dismiss());
+
+        // create alert dialog
+        alertDialogBuilder.create().show();
+    }
+
+    private static class DateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        private final OnDateClickListener clickListener;
+        private List<Item> items;
+
+        private DateAdapter(OnDateClickListener clickListener) {
+            this.clickListener = clickListener;
+            this.items = new ArrayList<>();
         }
-        return outputMap;
-    }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+        void update(List<Item> items) {
+            this.items = new ArrayList<>(items);
+            notifyDataSetChanged();
         }
-    }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
+        @NonNull
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            final LayoutInflater li = LayoutInflater.from(parent.getContext());
+            final View view = li.inflate(android.R.layout.simple_list_item_1, parent, false);
+            return new RecyclerView.ViewHolder(view) {};
+        }
 
-    @Override
-    public void onActivityCreated(Bundle savedState) {
-        super.onActivityCreated(savedState);
+        @Override
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            final TextView text = holder.itemView.findViewById(android.R.id.text1);
+            final Item item = items.get(position);
+            text.setText(item.title);
 
-        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-                                           final int arg2, long arg3) {
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DateFragment.this.getActivity());
-
-                // set title
-                alertDialogBuilder.setTitle("Confirm");
-
-                // set dialog message
-                final AlertDialog.Builder ok = alertDialogBuilder;
-                ok.setMessage("Remove this date?");
-                ok.setCancelable(true);
-                ok.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Item item = data.get(arg2);
-                        //data.remove(arg2);
-
-                        long millis = Long.parseLong(item.id);
-
-                        AlarmManager alarmManager = (AlarmManager)DateFragment.this.getActivity().getSystemService(Context.ALARM_SERVICE);
-                        Intent intent = new Intent(DateFragment.this.getActivity(), LocalNotification.class);
-                        intent.putExtra("message", item.title);
-
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(DateFragment.this.getActivity(), (int) millis, intent, PendingIntent.FLAG_ONE_SHOT);
-
-                        alarmManager.cancel(pendingIntent);
-
-                        Map<String, String> mapData = loadMap("dates");
-                        mapData.remove(item.id);
-
-                        saveMap(mapData, "dates");
-
-                        reloadAdapter();
-
-                    }
-                });
-                ok.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        // nothing
-                    }
-                });
-
-                // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
-
-                // show it
-                alertDialog.show();
+            holder.itemView.setOnClickListener(v -> clickListener.onClick(item));
+            holder.itemView.setOnLongClickListener(v -> {
+                clickListener.onLongClick(item);
                 return true;
-            }
-        });
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_date, container, false);
-        return view;
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-
-        if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-            Item objectItem = data.get(position);
-
-            mListener.onFragmentInteraction(objectItem.id);
-        }
-    }
-
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(String id);
-    }
-
-    private class SimpleAdapter extends BaseAdapter
-    {
-        @Override
-        public int getCount() {
-            return data.size();
+            });
         }
 
         @Override
-        public Object getItem(int position) {
-            return data.get(position);
+        public int getItemCount() {
+            return items.size();
         }
 
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if(convertView==null){
-                // inflate the layout
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                convertView = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
-            }
-
-            // object item based on the position
-            Item objectItem = data.get(position);
-            TextView    text    = (TextView)convertView.findViewById(android.R.id.text1);
-            text.setText(objectItem.title);
-
-            return convertView;
-        }
     }
 
-    private class Item
-    {
+    private static class Item {
         String title;
         String id;
+    }
+
+    interface OnDateClickListener {
+        void onClick(Item item);
+        void onLongClick(Item item);
     }
 
 }

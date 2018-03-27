@@ -1,61 +1,63 @@
 package com.zendesk.rememberthedate.ui;
 
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.zendesk.logger.Logger;
 import com.zendesk.rememberthedate.R;
 import com.zendesk.rememberthedate.model.UserProfile;
-import com.zendesk.rememberthedate.storage.UserProfileStorage;
-import com.zendesk.sdk.model.access.JwtIdentity;
-import com.zendesk.sdk.network.impl.ZendeskConfig;
+import com.zendesk.rememberthedate.push.PushUtils;
+import com.zendesk.rememberthedate.storage.AppStorage;
 import com.zendesk.util.StringUtils;
 import com.zopim.android.sdk.api.ZopimChat;
 import com.zopim.android.sdk.model.VisitorInfo;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import zendesk.belvedere.Belvedere;
+import zendesk.belvedere.Callback;
+import zendesk.belvedere.MediaResult;
+import zendesk.core.JwtIdentity;
+import zendesk.core.Zendesk;
+
+import static com.zendesk.rememberthedate.Global.getStorage;
 
 
 public class CreateProfileActivity extends AppCompatActivity {
 
-    private UserProfileStorage mUserProfileStorage;
-    private PlaceholderFragment mPlaceHolderFragment;
+    static void start(Context context) {
+        context.startActivity(new Intent(context, CreateProfileActivity.class));
+    }
+
+    private AppStorage storage;
+    private Uri uri;
+    private ImageView imageView;
+    private EditText emailText, nameText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_profile);
 
-        mUserProfileStorage = new UserProfileStorage(this);
-        final FragmentManager fm = getFragmentManager();
-        PlaceholderFragment dataFragment = (PlaceholderFragment) fm.findFragmentByTag(PlaceholderFragment.TAG);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (dataFragment == null) {
-            dataFragment = new PlaceholderFragment();
-            fm.beginTransaction().add(R.id.container, dataFragment, PlaceholderFragment.TAG).commit();
-            dataFragment.setCurrentBitmap(mUserProfileStorage.getProfile().getAvatar());
-        }
+        imageView = findViewById(R.id.imageButton);
+        nameText = findViewById(R.id.nameText);
+        emailText =findViewById(R.id.emailText);
 
-        this.mPlaceHolderFragment = dataFragment;
+        storage = getStorage(getApplicationContext());
+        uri = storage.getUserProfile().getUri();
     }
 
     @Override
@@ -65,55 +67,39 @@ public class CreateProfileActivity extends AppCompatActivity {
     }
 
     private void showStoredProfile() {
-        UserProfile userProfile = mUserProfileStorage.getProfile();
+        UserProfile userProfile = storage.getUserProfile();
 
-        ImageButton button = (ImageButton) this.findViewById(R.id.imageButton);
-        EditText nameText = (EditText) this.findViewById(R.id.nameText);
-        EditText emailText = (EditText) this.findViewById(R.id.emailText);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openImageIntent();
-            }
+        imageView.setOnClickListener(v -> {
+            Belvedere.from(getApplicationContext())
+                    .document()
+                    .contentType("image/*").allowMultiple(false)
+                    .open(CreateProfileActivity.this);
         });
 
-        if (mPlaceHolderFragment.getCurrentBitmap() != null) {
-            button.setImageBitmap(mPlaceHolderFragment.getCurrentBitmap());
+        if (userProfile.getUri() != null) {
+            ImageUtils.loadProfilePicture(getApplicationContext(), userProfile.getUri(), imageView);
         }
 
-        if(!StringUtils.hasLength(nameText.getText().toString())){
+        if (!StringUtils.hasLength(nameText.getText().toString())) {
             nameText.setText(userProfile.getName());
         }
 
-        if(!StringUtils.hasLength(emailText.getText().toString())){
+        if (!StringUtils.hasLength(emailText.getText().toString())) {
             emailText.setText(userProfile.getEmail());
         }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK && requestCode == 1001) {
-            Bitmap bitmap = null;
-
-            if(data.getData() != null) {
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
-                } catch (Exception e) {
-                    e.printStackTrace();
+        Belvedere.from(getApplicationContext()).getFilesFromActivityOnResult(requestCode, resultCode, data, new Callback<List<MediaResult>>() {
+            @Override
+            public void success(List<MediaResult> result) {
+                if (result.size() > 0) {
+                    uri = result.get(0).getUri();
+                    ImageUtils.loadProfilePicture(getApplicationContext(), uri, imageView);
                 }
-
-            } else if(data.getExtras() != null && data.getExtras().get("data") instanceof Bitmap){
-                bitmap = (Bitmap) data.getExtras().get("data");
-
             }
-
-            if(bitmap != null){
-                mPlaceHolderFragment.setCurrentBitmap(Bitmap.createScaledBitmap(bitmap, 120, 120, false));
-                ((ImageButton) this.findViewById(R.id.imageButton)).setImageBitmap(mPlaceHolderFragment.getCurrentBitmap());
-            }
-        }
+        });
     }
 
     @Override
@@ -125,108 +111,46 @@ public class CreateProfileActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
 
-        if (id == R.id.action_save) {
+        } else if (item.getItemId() == R.id.action_save) {
 
-            EditText nameText = (EditText) this.findViewById(R.id.nameText);
-            EditText emailText = (EditText) this.findViewById(R.id.emailText);
-
-            String email = emailText.getText().toString();
+            final String email = emailText.getText().toString();
+            final String name = nameText.getText().toString();
 
             if (StringUtils.hasLength(email)) {
-                mUserProfileStorage.storeUserProfile(
-                        nameText.getText().toString(),
-                        email,
-                        mPlaceHolderFragment.getCurrentBitmap()
-                );
 
-                final UserProfile profile = mUserProfileStorage.getProfile();
-                if (StringUtils.hasLength(profile.getEmail())) {
-                    Logger.i("Identity", "Setting identity");
-                    ZendeskConfig.INSTANCE.setIdentity(new JwtIdentity(profile.getEmail()));
-
-                    // Init Zopim Visitor info
-                    final VisitorInfo.Builder build = new VisitorInfo.Builder()
-                            .email(profile.getEmail());
-
-                    if (StringUtils.hasLength(profile.getName())) {
-                        build.name(profile.getName());
-                    }
-
-                    ZopimChat.setVisitorInfo(build.build());
-                }
-
+                final UserProfile user = new UserProfile(name, email, uri);
+                storage.storeUserProfile(user);
+                updateIdentityInSdks(user);
                 finish();
 
             } else {
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.fragment_profile_invalid_email), Toast.LENGTH_LONG).show();
-
             }
-
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    private void openImageIntent() {
+    private void updateIdentityInSdks(UserProfile user) {
 
-        // Camera.
-        final List<Intent> cameraIntents = new ArrayList<>();
-        final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        final PackageManager packageManager = getPackageManager();
-        final List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
-        for (ResolveInfo res : listCam) {
-            final String packageName = res.activityInfo.packageName;
-            final Intent intent = new Intent(captureIntent);
-            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-            intent.setPackage(packageName);
-            cameraIntents.add(intent);
+        // Update identity in Zendesk Support SDK
+        Zendesk.INSTANCE.setIdentity(new JwtIdentity(user.getEmail()));
+
+        // Register for push
+        PushUtils.registerWithZendesk();
+
+        // Init Chat SDK with an identity
+        final VisitorInfo.Builder build = new VisitorInfo.Builder()
+                .email(user.getEmail());
+
+        if (StringUtils.hasLength(user.getName())) {
+            build.name(user.getName());
         }
 
-        // Filesystem.
-        final Intent galleryIntent = new Intent();
-        galleryIntent.setType("image/*");
-        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-
-        // Chooser of filesystem options.
-        final Intent chooserIntent = Intent.createChooser(galleryIntent, "Select Source");
-
-        // Add the camera options.
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[]{}));
-
-        startActivityForResult(chooserIntent, 1001);
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public static final String TAG = "placeholder_fragment_create_profile";
-
-        private Bitmap currentBitmap;
-
-        public PlaceholderFragment() {
-            setRetainInstance(true);
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_create_profile, container, false);
-        }
-
-        public Bitmap getCurrentBitmap() {
-            return currentBitmap;
-        }
-
-        public void setCurrentBitmap(final Bitmap currentBitmap) {
-            this.currentBitmap = currentBitmap;
-        }
+        ZopimChat.setVisitorInfo(build.build());
     }
 }

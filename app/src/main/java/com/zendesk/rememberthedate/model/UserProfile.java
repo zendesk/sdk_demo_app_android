@@ -1,39 +1,31 @@
 package com.zendesk.rememberthedate.model;
 
-import android.graphics.Bitmap;
+import android.net.Uri;
 
 /**
  * Data model for a user profile
  */
 public class UserProfile {
 
-    private String mName;
+    private final String name;
+    private final String email;
+    private final Uri uri;
 
-    private String mEmail;
-
-    private Bitmap mAvatar;
-
-    public String getName() {
-        return mName;
+    public UserProfile(String name, String email, Uri uri) {
+        this.name = name;
+        this.email = email;
+        this.uri = uri;
     }
 
-    public void setName(String name) {
-        this.mName = name;
+    public String getName() {
+        return name;
     }
 
     public String getEmail() {
-        return mEmail;
+        return email;
     }
 
-    public void setEmail(String email) {
-        this.mEmail = email;
-    }
-
-    public void setAvatar(Bitmap avatar) {
-        this.mAvatar = avatar;
-    }
-
-    public Bitmap getAvatar() {
-        return mAvatar;
+    public Uri getUri() {
+        return uri;
     }
 }

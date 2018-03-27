@@ -4,7 +4,5 @@
     <string name="zd_appid">b892498e99e6e01920489988755918219684f60af86bcd10</string>
     <string name="zd_oauth">mobile_sdk_client_7f7d3c9abd345afe080e</string>
 
-    <string name="file_provider_authority">com.zendesk.rememberthedate</string>
-
     <string name="zopim_account_id">replace_me_chat_account_id</string>
 </resources>

@@ -2,140 +2,155 @@ package com.zendesk.rememberthedate.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StatFs;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.zendesk.rememberthedate.BuildConfig;
 import com.zendesk.rememberthedate.R;
-import com.zendesk.rememberthedate.model.UserProfile;
-import com.zendesk.rememberthedate.storage.UserProfileStorage;
-import com.zendesk.sdk.feedback.ui.ContactZendeskActivity;
-import com.zendesk.sdk.requests.RequestActivity;
-import com.zendesk.sdk.support.SupportActivity;
-import com.zendesk.util.StringUtils;
+import com.zendesk.util.FileUtils;
 import com.zopim.android.sdk.api.ZopimChat;
 import com.zopim.android.sdk.prechat.PreChatForm;
 import com.zopim.android.sdk.prechat.ZopimChatActivity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import zendesk.core.Zendesk;
+import zendesk.support.CustomField;
+import zendesk.support.UiConfig;
+import zendesk.support.guide.HelpCenterActivity;
+import zendesk.support.request.RequestActivity;
+import zendesk.support.requestlist.RequestListActivity;
 
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class HelpFragment extends Fragment {
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
-    private static final String ARG_SECTION_NUMBER = "section_number";
 
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
-    public static HelpFragment newInstance(int sectionNumber) {
-        HelpFragment fragment = new HelpFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public static final String FRAGMENT_TITLE = "Help";
 
-    public HelpFragment() {
-        // Intentionally empty
+    private static final long TICKET_FORM_ID = 62599L;
+    private static final long TICKET_FIELD_APP_VERSION = 24328555L;
+    private static final long TICKET_FIELD_DEVICE_FREE_SPACE = 24274009L;
+
+    private Button helpCenter, contactUs, requestList, chat;
+
+    public static HelpFragment newInstance() {
+        return new HelpFragment();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        final Context ctx = getActivity().getApplicationContext();
-
-        rootView.findViewById(R.id.fragment_main_btn_knowledge_base).setOnClickListener(new AuthOnClickWrapper(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new SupportActivity.Builder().show(getActivity());
-            }
-        }, ctx));
-
-        rootView.findViewById(R.id.fragment_main_btn_contact_us).setOnClickListener(new AuthOnClickWrapper(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ContactZendeskActivity.class);
-                startActivity(intent);
-            }
-        }, ctx));
-
-        rootView.findViewById(R.id.fragment_main_btn_my_tickets).setOnClickListener(new AuthOnClickWrapper(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), RequestActivity.class);
-                startActivity(intent);
-            }
-        }, ctx));
-
-        rootView.findViewById(R.id.fragment_main_btn_chat).setOnClickListener(new AuthOnClickWrapper(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-
-                PreChatForm build = new PreChatForm.Builder()
-                        .name(PreChatForm.Field.REQUIRED)
-                        .email(PreChatForm.Field.REQUIRED)
-                        .phoneNumber(PreChatForm.Field.OPTIONAL)
-                        .message(PreChatForm.Field.OPTIONAL)
-                        .build();
-
-                ZopimChat.SessionConfig department = new ZopimChat.SessionConfig()
-                        .preChatForm(build)
-                        .department("The date");
-
-                ZopimChatActivity.startActivity(getActivity(), department);
-            }
-        }, ctx));
-
-        return rootView;
+        final View view = inflater.inflate(R.layout.fragment_main, container, false);
+        helpCenter = view.findViewById(R.id.fragment_main_btn_knowledge_base);
+        contactUs = view.findViewById(R.id.fragment_main_btn_contact_us);
+        requestList = view.findViewById(R.id.fragment_main_btn_my_tickets);
+        chat = view.findViewById(R.id.fragment_main_btn_chat);
+        return view;
     }
 
-    class AuthOnClickWrapper implements View.OnClickListener {
+    @Override
+    public void onStart() {
+        super.onStart();
+        final Context context = getActivity();
+        if (context != null) {
+            helpCenter.setOnClickListener(new LoggedInClickListener(v -> openHelpCenter(context)));
+            contactUs.setOnClickListener(new LoggedInClickListener(v -> openRequest(context)));
+            requestList.setOnClickListener(new LoggedInClickListener(v -> openRequestList(context)));
+            chat.setOnClickListener(new LoggedInClickListener(v -> openChat(context)));
+        }
+    }
 
-        private View.OnClickListener mOnClickListener;
-        private UserProfileStorage mUserProfileStorage;
-        private Context mContext;
+    private void openHelpCenter(Context context) {
+        UiConfig config = RequestActivity.builder()
+                .withTicketForm(TICKET_FORM_ID, getCustomFields())
+                .config();
 
-        public AuthOnClickWrapper(View.OnClickListener onClickListener, Context context){
-            this.mOnClickListener = onClickListener;
-            this.mUserProfileStorage = new UserProfileStorage(context);
-            this.mContext = context;
+        HelpCenterActivity.builder()
+                .show(context, config);
+    }
+
+    private void openRequestList(Context context) {
+        UiConfig config = RequestActivity.builder()
+                .withTicketForm(TICKET_FORM_ID, getCustomFields())
+                .config();
+
+        RequestListActivity.builder()
+                .show(context, config);
+    }
+
+    private void openRequest(Context context) {
+        RequestActivity.builder()
+                .withTicketForm(TICKET_FORM_ID, getCustomFields())
+                .show(context);
+    }
+
+    private void openChat(Context context) {
+        PreChatForm build = new PreChatForm.Builder()
+                .name(PreChatForm.Field.REQUIRED)
+                .email(PreChatForm.Field.REQUIRED)
+                .phoneNumber(PreChatForm.Field.OPTIONAL)
+                .message(PreChatForm.Field.OPTIONAL)
+                .build();
+
+        ZopimChat.SessionConfig department = new ZopimChat.SessionConfig()
+                .preChatForm(build)
+                .department("The date");
+
+        ZopimChatActivity.startActivity(context, department);
+    }
+
+    private List<CustomField> getCustomFields() {
+        final String appVersion = String.format(
+                Locale.US,
+                "version_%s",
+                BuildConfig.VERSION_NAME
+        );
+
+        final StatFs stat = new StatFs(Environment.getDataDirectory().getPath());
+        final long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getAvailableBlocks();
+        final String freeSpace = FileUtils.humanReadableFileSize(bytesAvailable);
+
+
+        final List<CustomField> customFields = new ArrayList<>();
+        customFields.add(new CustomField(TICKET_FIELD_APP_VERSION, appVersion));
+        customFields.add(new CustomField(TICKET_FIELD_DEVICE_FREE_SPACE, freeSpace));
+
+        return customFields;
+    }
+
+    private static class LoggedInClickListener implements View.OnClickListener {
+
+        final private View.OnClickListener onClickListener;
+
+        LoggedInClickListener(View.OnClickListener onClickListener) {
+            this.onClickListener = onClickListener;
         }
 
         @Override
-        public void onClick(View v) {
-            final UserProfile profile = mUserProfileStorage.getProfile();
-
-            if(StringUtils.hasLength(profile.getEmail())){
-                mOnClickListener.onClick(v);
-            }else{
-               showDialog();
+        public void onClick(View view) {
+            if (Zendesk.INSTANCE.isInitialized() && Zendesk.INSTANCE.getIdentity() != null) {
+                onClickListener.onClick(view);
+            } else {
+                showDialog(view.getContext());
             }
         }
 
-        private void showDialog(){
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        private void showDialog(Context context) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setMessage(R.string.dialog_auth_title)
-                    .setPositiveButton(R.string.dialog_auth_positive_btn, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            startActivity(new Intent(mContext, CreateProfileActivity.class));
-                        }
-                    })
-                    .setNegativeButton(R.string.dialog_auth_negative_btn, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Intentionally empty
-                        }
-                    });
+                    .setPositiveButton(R.string.dialog_auth_positive_btn, (dialog, id) -> CreateProfileActivity.start(context))
+                    .setNegativeButton(R.string.dialog_auth_negative_btn, null);
             builder.create().show();
         }
     }

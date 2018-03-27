@@ -1,14 +1,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="ZendeskSdkTheme.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/RedActionBar</item>
-
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <item name="android:textAppearance">@style/grey_text</item>
+        <item name="android:textAppearance">@style/primary_text</item>
     </style>
 
     <style name="ZopimChatTheme" parent="AppTheme">
@@ -16,13 +14,12 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="grey_text" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/grey_text</item>
+    <style name="primary_text" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
-    <style name="RedActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="android:backgroundStacked">@color/colorSecondary</item>
+    <style name="DatePickerOverlay">
+        <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
 </resources>

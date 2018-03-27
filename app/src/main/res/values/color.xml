@@ -1,24 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#F44336</color>
-    <color name="colorSecondary">#F44336</color>
-    <color name="colorPrimaryDark">#D32F2F</color>
-    <color name="colorAccent">#009688</color>
+    <color name="colorPrimary">#00bcd4</color>
+    <color name="colorSecondary">#62efff</color>
+    <color name="colorPrimaryDark">#008ba3</color>
 
-    <color name="light_background">#f1f1f1</color>
-    <color name="divider">#c1c1c1</color>
-    <color name="grey_text">#434343</color>
-    <color name="text_hint">#ababab</color>
-    <color name="disabled_text">#a6a6a6</color>
+    <color name="colorAccent">#fdd835</color>
+    <color name="colorLightAccent">#ffff6b</color>
+    <color name="colorDarkAccent">#c6a700</color>
 
-    <!-- START BUTTON COLOURS -->
-    <color name="disabled_button_dropshadow">#B9B9B9</color>
-    <color name="disabled_button_background">#D4D4D4</color>
-
-    <color name="green_button_dropshadow">#5C8800</color>
-    <color name="green_button_background">#78A300</color>
-
-    <color name="white_button_dropshadow">#e5e5e5</color>
-    <color name="white_button_background">@android:color/white</color>
-    <!-- END BUTTON COLOURS -->
+    <color name="primaryTextColor">#fafafa</color>
+    <color name="secondaryTextColor">#fffde7</color>
 </resources>
