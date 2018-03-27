@@ -1,22 +1,20 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:orientation="vertical"
-        android:id="@android:id/empty"
+        android:id="@+id/empty_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_empty"
+            android:src="@drawable/ic_date"
             android:layout_marginBottom="10dp"
             android:layout_above="@+id/textView"
             android:layout_centerHorizontal="true" />
-
 
         <TextView
             android:layout_width="wrap_content"
@@ -28,8 +26,12 @@
 
      </RelativeLayout>
 
-    <ListView
-        android:id="@android:id/list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/date_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false"/>
+
+</FrameLayout>

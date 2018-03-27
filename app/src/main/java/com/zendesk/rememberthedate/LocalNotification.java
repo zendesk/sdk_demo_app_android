@@ -17,10 +17,11 @@ public class LocalNotification extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         final String message = intent.getExtras().getString("message", StringUtils.EMPTY_STRING);
         final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0);
+        final String channelId = context.getResources().getString(R.string.app_name);
 
-        final Notification notification = new NotificationCompat.Builder(context)
+        final Notification notification = new NotificationCompat.Builder(context, channelId)
                 .setContentTitle(context.getString(R.string.push_date_title))
-                .setSmallIcon(R.drawable.ic_notification)
+                .setSmallIcon(R.drawable.ic_date_24dp)
                 .setContentText(message)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
