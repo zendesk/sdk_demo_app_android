@@ -120,8 +120,7 @@ public class CreateProfileActivity extends AppCompatActivity {
             final String email = emailText.getText().toString();
             final String name = nameText.getText().toString();
 
-            if (StringUtils.hasLength(email)) {
-
+            if (StringUtils.hasLength(email) && StringUtils.hasLength(name)) {
                 final UserProfile user = new UserProfile(name, email, uri);
                 storage.storeUserProfile(user);
                 updateIdentityInSdks(user);

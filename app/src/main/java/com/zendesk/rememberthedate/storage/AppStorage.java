@@ -12,8 +12,12 @@ import com.zendesk.rememberthedate.model.UserProfile;
 import com.zendesk.util.StringUtils;
 
 import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class AppStorage {
 
@@ -72,16 +76,14 @@ public class AppStorage {
 
     public Map<String, DateModel> loadMapData(){
         final String jsonString = storage.getString(DATES, null);
-
         if (jsonString != null) {
             try{
-                Type dateModelType = new TypeToken<Map<String, DateModel>>(){}.getType();
+                Type dateModelType = new TypeToken<HashMap<String, DateModel>>(){}.getType();
                 return gson.fromJson(jsonString, dateModelType);
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
-
-        return new HashMap<>(0);
+        return Collections.emptyMap();
     }
 }

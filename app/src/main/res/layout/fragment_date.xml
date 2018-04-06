@@ -1,37 +1,38 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/empty_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center">
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_date" />
 
-    <RelativeLayout
-        android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_date"
-            android:layout_marginBottom="10dp"
-            android:layout_above="@+id/textView"
-            android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/fragment_date_no_items"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/textView" />
-
-     </RelativeLayout>
+    <TextView
+        android:id="@+id/text_view"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_width="180dp"
+        android:textAlignment="center"
+        android:textColor="@color/secondaryTextColor"
+        android:text="Tap + to add some dates and create your list" />
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="48dp" />
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/date_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="8dp"
+        android:clipToPadding="false"
         android:paddingBottom="8dp"
-        android:clipToPadding="false"/>
+        android:paddingTop="8dp" />
 
 </FrameLayout>

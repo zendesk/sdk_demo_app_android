@@ -11,8 +11,10 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.net.Uri;
 import android.support.annotation.DimenRes;
+import android.util.Log;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.zendesk.rememberthedate.R;
@@ -21,12 +23,13 @@ import java.util.Locale;
 
 
 class ImageUtils {
-
     static void loadProfilePicture(Context context, Uri uri, ImageView imageView) {
+        int diameter = context.getResources().getDimensionPixelSize(R.dimen.image_diameter);
         Picasso.with(context)
                 .load(uri)
-                .fit()
-                .transform(RoundedTransformation.get(context, R.dimen.image_radius))
+                .resize(diameter, diameter)
+                .centerCrop()
+                .transform(new RoundedTransformation(diameter/2))
                 .into(imageView);
     }
 

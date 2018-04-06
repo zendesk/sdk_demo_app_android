@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="88dp"
+    android:height="88dp"
+    android:viewportWidth="99"
+    android:viewportHeight="99">
+
+    <group
+            android:translateX="-135.000000"
+            android:translateY="-161.000000">
+        <group
+                android:translateX="126.000000"
+                android:translateY="152.000000">
+            <path
+                android:fillColor="#DDDDDD"
+                android:strokeWidth="1"
+                android:pathData="M54,9 C29.16,9 9,29.16 9,54 C9,78.84 29.16,99 54,99 C78.84,99 99,78.84 99,54 C99,29.16 78.84,9 54,9 Z M54,22.5 C61.47,22.5 67.5,28.53 67.5,36 C67.5,43.47 61.47,49.5 54,49.5 C46.53,49.5 40.5,43.47 40.5,36 C40.5,28.53 46.53,22.5 54,22.5 Z M54,86.4 C42.75,86.4 32.805,80.64 27,71.91 C27.135,62.955 45,58.05 54,58.05 C62.955,58.05 80.865,62.955 81,71.91 C75.195,80.64 65.25,86.4 54,86.4 Z" />
+            <path
+                android:fillType="evenOdd"
+                android:strokeWidth="1"
+                android:pathData="M 0 0 L 108 0 L 108 108 L 0 108 Z" />
+            <group
+                    android:translateX="76.000000"
+                    android:translateY="76.000000">
+                <path
+                    android:fillColor="#FAFAFA"
+                    android:fillType="evenOdd"
+                    android:strokeWidth="1"
+                    android:pathData="M16,0 C7.16444444,0 0,7.16444444 0,16 C0,24.8355556 7.14666667,32 16,32 C24.8355556,32 32,24.8355556 32,16 C32,7.16444444 24.8355556,0 16,0 Z" />
+                <path
+                    android:fillColor="#FDD834"
+                    android:strokeWidth="1"
+                    android:pathData="M16.5,3 C23.955,3 30,9.045 30,16.5 C30,23.955 23.955,30 16.5,30 C9.03,30 3,23.955 3,16.5 C3,9.045 9.045,3 16.5,3 Z M17.85,11.1 L15.15,11.1 L15.15,15.15 L11.1,15.15 L11.1,17.85 L15.15,17.85 L15.15,21.9 L17.85,21.9 L17.85,17.85 L21.9,17.85 L21.9,15.15 L17.85,15.15 L17.85,11.1 Z" />
+            </group>
+        </group>
+    </group>
+</vector>

@@ -11,6 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.zendesk.rememberthedate.Global;
 import com.zendesk.rememberthedate.R;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private Toolbar toolbar;
+//    private Menu menu;
     private FloatingActionButton fab;
 
     @Override
@@ -48,11 +51,13 @@ public class MainActivity extends AppCompatActivity {
 
         final SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         viewPager.addOnPageChangeListener(new FabPageChangeListener(this, fab));
+//        viewPager.addOnPageChangeListener(new MenuPageChangeListener(this, menu));
         viewPager.setAdapter(sectionsPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
         final int viewPagerPos = getIntent().getIntExtra(EXTRA_VIEWPAGER_POSITION, POS_DATE_LIST);
         viewPager.setCurrentItem(viewPagerPos);
+
     }
 
     private void bindViews() {
@@ -66,6 +71,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         PushUtils.checkPlayServices(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.profile_menu, menu);
+//        this.menu = menu;
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_edit:
+                CreateProfileActivity.start(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 
     private void initialiseChatSdk() {
@@ -154,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 case POS_PROFILE: {
-                    configureFabForProfile();
+                    fab.hide();
                     break;
                 }
 
@@ -167,19 +191,62 @@ public class MainActivity extends AppCompatActivity {
 
         private void configureFabForDateList() {
             fab.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_add_light));
-            fab.setOnClickListener(view -> CreateDateActivity.start(context));
+            fab.setOnClickListener(view -> EditDateActivity.start(context));
+
             fab.show();
         }
 
         private void configureFabForProfile() {
             fab.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_edit_light));
-            fab.setOnClickListener(view -> CreateProfileActivity.start(context));
-            fab.show();
+//            fab.setOnClickListener(view -> CreateProfileActivity.start(context));
+            fab.hide();
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
             // Intentionally empty
+        }
+    }
+
+    private static class MenuPageChangeListener implements ViewPager.OnPageChangeListener {
+
+        private final Context context;
+        private final Menu menu;
+
+        private MenuPageChangeListener(Context context, Menu menu) {
+            this.context = context;
+            this.menu = menu;
+        }
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            // Intentionally empty
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            switch (position) {
+
+                case POS_DATE_LIST: {
+                    menu.findItem(R.id.action_delete).setVisible(false);
+                    break;
+                }
+
+                case POS_PROFILE: {
+                    menu.findItem(R.id.action_delete).setVisible(true);
+                    break;
+                }
+
+                default: {
+                    menu.findItem(R.id.action_delete).setVisible(false);
+                    break;
+                }
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
         }
     }
 

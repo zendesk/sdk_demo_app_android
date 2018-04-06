@@ -63,6 +63,7 @@ dependencies {
 
     implementation group: 'com.zopim.android', name: 'sdk', version: '1.3.6.1'
     implementation group: 'com.zendesk', name: 'support', version: '2.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

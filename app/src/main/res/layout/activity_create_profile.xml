@@ -8,7 +8,6 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <include layout="@layout/toolbar" />
 
     </android.support.design.widget.AppBarLayout>
@@ -19,14 +18,12 @@
         android:layout_height="match_parent"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingTop="24dp"
         android:layout_marginTop="?android:attr/actionBarSize"
         tools:context="com.zendesk.rememberthedate.ui.CreateProfileActivity$PlaceholderFragment">
 
-
         <RelativeLayout android:layout_width="match_parent"
             android:layout_height="wrap_content" >
-
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -34,16 +31,16 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/ic_empty"
+                android:src="@drawable/empty_profile"
                 android:minHeight="140dp"
                 android:minWidth="140dp"
                 android:scaleType="centerCrop" />
 
             <EditText
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
-                android:hint="@string/fragment_create_profile_name_hint"
+                android:hint="@string/add_name"
                 android:ems="10"
                 android:id="@+id/nameText"
                 android:layout_below="@+id/imageButton"
@@ -51,18 +48,17 @@
                 android:layout_marginTop="30dp" />
 
             <EditText
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:hint="@string/fragment_create_profile_email_hint"
+                android:hint="@string/add_email"
                 android:ems="10"
                 android:id="@+id/emailText"
                 android:layout_below="@+id/nameText"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp" />
-
-
         </RelativeLayout>
+
     </ScrollView>
 
 </FrameLayout>
