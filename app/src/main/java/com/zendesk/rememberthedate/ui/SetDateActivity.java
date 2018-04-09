@@ -1,26 +1,25 @@
 package com.zendesk.rememberthedate.ui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.DatePicker;
 
 import com.zendesk.rememberthedate.R;
 
-import java.sql.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class SetDateActivity extends AppCompatActivity {
 
     private static final String CALENDAR_RESULT_KEY = "CALENDAR_RESULT_KEY";
-    Button ok, cancel;
-    DatePicker datePicker;
-    Calendar calendar;
+    public static final int REQUEST_CODE = 21;
+    private Button ok;
+    private Button cancel;
+    private DatePicker datePicker;
+    private Calendar calendar;
 
     static Calendar getCalendarFromResultIntent(Intent intent){
         return (Calendar) intent.getSerializableExtra(CALENDAR_RESULT_KEY);

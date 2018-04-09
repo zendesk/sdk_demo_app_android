@@ -6,22 +6,21 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.zendesk.rememberthedate.Constants;
 import com.zendesk.rememberthedate.model.DateModel;
 import com.zendesk.rememberthedate.model.UserProfile;
 import com.zendesk.util.StringUtils;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class AppStorage {
 
-    private static final String REMEMBER_THE_DATE_STORE = "Dates";
+    private static final String REMEMBER_THE_DATE_STORE = "rtd_dates";
 
     // Profile keys
     private static final String NAME_KEY = "name";
@@ -36,7 +35,7 @@ public class AppStorage {
 
     public AppStorage(Context context) {
         this.storage = context.getSharedPreferences(REMEMBER_THE_DATE_STORE, Context.MODE_PRIVATE);
-        this.gson = new Gson();
+        this.gson = new GsonBuilder().setDateFormat(Constants.ISO8601_DATE_PATTERN).create();
     }
 
     public void storeUserProfile(UserProfile user) {
@@ -67,6 +66,7 @@ public class AppStorage {
     }
 
     public void storeMapData(Map<String, DateModel> inputMap){
+
         String jsonString = gson.toJson(inputMap);
 
         storage.edit()

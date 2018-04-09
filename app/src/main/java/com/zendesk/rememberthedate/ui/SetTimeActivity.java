@@ -18,9 +18,13 @@ import java.util.TimeZone;
 public class SetTimeActivity extends AppCompatActivity {
 
     private static final String TIME_REQUEST_CODE = "TIME_REQUEST_CODE";
-    Button ok, cancel;
-    TimePicker timePicker;
-    Calendar calendar;
+    public static final int REQUEST_CODE = 22;
+
+    private Button ok;
+    private Button cancel;
+    private TimePicker timePicker;
+
+    private Calendar calendar;
 
     static Calendar getTimeFromResultIntent(Intent intent) {
         return (Calendar) intent.getSerializableExtra(TIME_REQUEST_CODE);
@@ -55,7 +59,7 @@ public class SetTimeActivity extends AppCompatActivity {
         });
     }
 
-    public void bindViews() {
+    private void bindViews() {
         ok = findViewById(R.id.ok_button);
         cancel = findViewById(R.id.cancel_button);
         timePicker = findViewById(R.id.time_picker);

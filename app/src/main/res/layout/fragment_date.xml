@@ -21,7 +21,7 @@
         android:layout_width="180dp"
         android:textAlignment="center"
         android:textColor="@color/secondaryTextColor"
-        android:text="Tap + to add some dates and create your list" />
+        android:text="@string/empty_date_list_template" />
         <Space
             android:layout_width="0dp"
             android:layout_height="48dp" />

@@ -8,30 +8,24 @@ import java.util.GregorianCalendar;
 
 public class DateModel {
 
-    private String id, title;
-    private Time time;
-    private Calendar calendar;
+    private final long id;
+    private final String title;
+    private final Date date;
 
-    public DateModel(String title, Time time){
-        this.id = Long.toString(time.toMillis(true));
+    public DateModel(long id, String title,Date date){
+        this.id = id    ;
         this.title = title;
-        this.time = time;
-        calendar = new GregorianCalendar(time.year, time.month, time.monthDay, time.hour, time.monthDay);
+        this.date = date;
     }
 
+    public long getId() {
+        return id;
+   }
     public String getTitle(){
         return title;
     }
 
-    public Time getTime(){
-        return time;
-    }
-
-    public String getId() {
-        return id;
-   }
-
     public Date getDate() {
-        return calendar.getTime();
+        return date;
     }
 }

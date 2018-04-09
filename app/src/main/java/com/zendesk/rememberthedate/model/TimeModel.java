@@ -17,15 +17,15 @@ public class TimeModel implements Parcelable {
         }
     };
 
-    private int hour;
-    private int minute;
+    private final int hour;
+    private final int minute;
 
     public TimeModel(int hour, int minute){
         this.hour = hour;
         this.minute = minute;
     }
 
-    protected TimeModel(Parcel in) {
+    private TimeModel(Parcel in) {
         hour = in.readInt();
         minute = in.readInt();
     }

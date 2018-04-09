@@ -26,12 +26,9 @@ import com.zendesk.rememberthedate.R;
 import com.zendesk.rememberthedate.model.DateModel;
 import com.zendesk.rememberthedate.storage.AppStorage;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -68,7 +65,7 @@ public class DateFragment extends Fragment {
         dateAdapter = new DateAdapter(new OnDateClickListener() {
             @Override
             public void onClick(DateModel item) {
-                EditDateActivity.start(getActivity(), item.getId());
+                EditDateActivity.start(getActivity(), Long.toString(item.getId()));
             }
 
             @Override
@@ -121,7 +118,7 @@ public class DateFragment extends Fragment {
                 .setPositiveButton("Yes", (dialog, id) -> {
                     //data.remove(arg2);
 
-                    long millis = Long.parseLong(item.getId());
+                    long millis = item.getId();
 
                     AlarmManager alarmManager = (AlarmManager) DateFragment.this.getActivity().getSystemService(Context.ALARM_SERVICE);
                     Intent intent = new Intent(DateFragment.this.getActivity(), LocalNotification.class);
@@ -130,7 +127,7 @@ public class DateFragment extends Fragment {
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(DateFragment.this.getActivity(), (int) millis, intent, PendingIntent.FLAG_ONE_SHOT);
 
                     Map<String, DateModel> mapData = storage.loadMapData();
-                    mapData.remove(item.getId());
+                    mapData.remove(Long.toString(item.getId()));
                     storage.storeMapData(mapData);
 
                     alarmManager.cancel(pendingIntent);
@@ -161,14 +158,14 @@ public class DateFragment extends Fragment {
 
         @NonNull
         @Override
-        public MyViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
             final LayoutInflater li = LayoutInflater.from(parent.getContext());
             final View view = li.inflate(R.layout.date_cell, parent, false);
             return new MyViewHolder(view) {};
         }
 
         @Override
-        public void onBindViewHolder(final MyViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
             Log.i("DateAdapter", items.get(position).getTitle());
             DateModel item = items.get(position);
 
@@ -187,8 +184,8 @@ public class DateFragment extends Fragment {
         }
 
         public static class MyViewHolder extends ViewHolder {
-            TextView titleView;
-            TextView dateView;
+            final TextView titleView;
+            final TextView dateView;
 
             MyViewHolder(View view){
                 super(view);
@@ -196,9 +193,9 @@ public class DateFragment extends Fragment {
                 this.dateView = view.findViewById(R.id.date_view);
             }
 
-            public void bindData(DateModel dateModel){
+            private void bindData(DateModel dateModel){
                 titleView.setText(dateModel.getTitle());
-                Date date = new Date(dateModel.getTime().toMillis(false));
+                Date date = dateModel.getDate();
                 dateView.setText(Constants.HUMAN_READABLE_DATETIME.format(date));
             }
         }

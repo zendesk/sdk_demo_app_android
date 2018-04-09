@@ -11,10 +11,8 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.net.Uri;
 import android.support.annotation.DimenRes;
-import android.util.Log;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.zendesk.rememberthedate.R;
