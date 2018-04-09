@@ -123,7 +123,7 @@ public class EditDateActivity extends AppCompatActivity {
                 String calendarKey = Long.toString(timeLong);
 
                 // Delete previous instance of item, if changed
-                if(dateMap.containsKey(key)){
+                if (dateMap.containsKey(key)) {
                     dateMap.remove(key);
                 }
 

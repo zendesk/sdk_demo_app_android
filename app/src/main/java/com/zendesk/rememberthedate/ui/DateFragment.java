@@ -161,7 +161,8 @@ public class DateFragment extends Fragment {
         public MyViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
             final LayoutInflater li = LayoutInflater.from(parent.getContext());
             final View view = li.inflate(R.layout.date_cell, parent, false);
-            return new MyViewHolder(view) {};
+            return new MyViewHolder(view) {
+            };
         }
 
         @Override
@@ -187,13 +188,13 @@ public class DateFragment extends Fragment {
             final TextView titleView;
             final TextView dateView;
 
-            MyViewHolder(View view){
+            MyViewHolder(View view) {
                 super(view);
                 this.titleView = view.findViewById(R.id.title_view);
                 this.dateView = view.findViewById(R.id.date_view);
             }
 
-            private void bindData(DateModel dateModel){
+            private void bindData(DateModel dateModel) {
                 titleView.setText(dateModel.getTitle());
                 Date date = dateModel.getDate();
                 dateView.setText(Constants.HUMAN_READABLE_DATETIME.format(date));
@@ -204,6 +205,7 @@ public class DateFragment extends Fragment {
 
     interface OnDateClickListener {
         void onClick(DateModel item);
+
         void onLongClick(DateModel item);
     }
 

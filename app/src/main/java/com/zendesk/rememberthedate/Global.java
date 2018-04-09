@@ -20,9 +20,9 @@ public class Global extends Application {
 
     private AppStorage storage;
 
-    public static AppStorage getStorage(@Nullable Context context){
+    public static AppStorage getStorage(@Nullable Context context) {
         if (context != null && context.getApplicationContext() instanceof Global) {
-            return ((Global)context.getApplicationContext()).storage;
+            return ((Global) context.getApplicationContext()).storage;
         }
 
         throw new IllegalArgumentException("Can't find global Application");

@@ -21,7 +21,7 @@ public class SetDateActivity extends AppCompatActivity {
     private DatePicker datePicker;
     private Calendar calendar;
 
-    static Calendar getCalendarFromResultIntent(Intent intent){
+    static Calendar getCalendarFromResultIntent(Intent intent) {
         return (Calendar) intent.getSerializableExtra(CALENDAR_RESULT_KEY);
     }
 

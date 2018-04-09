@@ -1,7 +1,6 @@
 package com.zendesk.rememberthedate.ui;
 
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -86,10 +84,10 @@ public class CreateProfileActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length() == 0) {
+                if (s.length() == 0) {
                     isProfileSettable = false;
                     invalidateOptionsMenu();
-                }else {
+                } else {
                     isProfileSettable = true;
                     invalidateOptionsMenu();
                 }

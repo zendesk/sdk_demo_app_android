@@ -12,16 +12,17 @@ public class DateModel {
     private final String title;
     private final Date date;
 
-    public DateModel(long id, String title,Date date){
-        this.id = id    ;
+    public DateModel(long id, String title, Date date) {
+        this.id = id;
         this.title = title;
         this.date = date;
     }
 
     public long getId() {
         return id;
-   }
-    public String getTitle(){
+    }
+
+    public String getTitle() {
         return title;
     }
 

@@ -27,7 +27,7 @@ class ImageUtils {
                 .load(uri)
                 .resize(diameter, diameter)
                 .centerCrop()
-                .transform(new RoundedTransformation(diameter/2))
+                .transform(new RoundedTransformation(diameter / 2))
                 .into(imageView);
     }
 
