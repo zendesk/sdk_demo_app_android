@@ -43,9 +43,9 @@ public class SetTimeActivity extends AppCompatActivity {
         ok.setOnClickListener(v -> {
             calendar = new GregorianCalendar(TimeZone.getDefault(), Locale.getDefault());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                calendar.set(2018, 4, 4, timePicker.getHour(), timePicker.getMinute());
+                calendar.set(0, 0, 0, timePicker.getHour(), timePicker.getMinute());
             } else {
-                calendar.set(2018, 4, 4, timePicker.getCurrentHour(), timePicker.getCurrentMinute());
+                calendar.set(0, 0, 0, timePicker.getCurrentHour(), timePicker.getCurrentMinute());
             }
 
             Intent intent = new Intent();

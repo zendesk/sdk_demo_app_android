@@ -65,7 +65,7 @@ public class DateFragment extends Fragment {
         dateAdapter = new DateAdapter(new OnDateClickListener() {
             @Override
             public void onClick(DateModel item) {
-                EditDateActivity.start(getActivity(), Long.toString(item.getId()));
+                EditDateActivity.start(getActivity(), Long.toString(item.getDateInMillis()));
             }
 
             @Override
@@ -118,7 +118,7 @@ public class DateFragment extends Fragment {
                 .setPositiveButton("Yes", (dialog, id) -> {
                     //data.remove(arg2);
 
-                    long millis = item.getId();
+                    long millis = item.getDateInMillis();
 
                     AlarmManager alarmManager = (AlarmManager) DateFragment.this.getActivity().getSystemService(Context.ALARM_SERVICE);
                     Intent intent = new Intent(DateFragment.this.getActivity(), LocalNotification.class);
@@ -127,7 +127,7 @@ public class DateFragment extends Fragment {
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(DateFragment.this.getActivity(), (int) millis, intent, PendingIntent.FLAG_ONE_SHOT);
 
                     Map<String, DateModel> mapData = storage.loadMapData();
-                    mapData.remove(Long.toString(item.getId()));
+                    mapData.remove(Long.toString(item.getDateInMillis()));
                     storage.storeMapData(mapData);
 
                     alarmManager.cancel(pendingIntent);

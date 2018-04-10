@@ -1,32 +1,26 @@
 package com.zendesk.rememberthedate.model;
 
-import android.text.format.Time;
-
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 public class DateModel {
 
-    private final long id;
     private final String title;
-    private final Date date;
+    private final long dateInMillis;
 
-    public DateModel(long id, String title, Date date) {
-        this.id = id;
+    public DateModel(String title, long dateInMillis ) {
         this.title = title;
-        this.date = date;
-    }
-
-    public long getId() {
-        return id;
+        this.dateInMillis = dateInMillis;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public long getDateInMillis(){
+        return dateInMillis;
+    }
+
     public Date getDate() {
-        return date;
+        return new Date(dateInMillis);
     }
 }

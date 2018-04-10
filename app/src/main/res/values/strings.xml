@@ -22,7 +22,7 @@
     <string name="fragment_main_btn_contact_us">Contact us</string>
     <string name="fragment_main_btn_my_tickets">My tickets</string>
     <string name="fragment_main_btn_chat">Start chat</string>
-    <string name="fragment_profile_invalid_email">Please provide an email address, at least</string>
+    <string name="fragment_profile_invalid_email">Please provide an email address</string>
 
     <string name="dialog_auth_title">Setup your profile</string>
     <string name="dialog_auth_positive_btn">Do it now</string>

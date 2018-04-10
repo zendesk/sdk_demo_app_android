@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.format.Time;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -22,12 +20,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 public class EditDateActivity extends AppCompatActivity {
 
-    private static final int DATE_REQUEST_CODE = 21, TIME_REQUEST_CODE = 22;
     private EditText title;
     private TextView dateView, timeView;
     private AppStorage storage;
@@ -119,15 +114,15 @@ public class EditDateActivity extends AppCompatActivity {
                         currentlySelectedTime.getHours(),
                         currentlySelectedTime.getMinutes());
 
-                long timeLong = newCalendar.getTimeInMillis();
-                String calendarKey = Long.toString(timeLong);
+                long dateLong = newCalendar.getTimeInMillis();
+                String calendarKey = Long.toString(dateLong);
 
                 // Delete previous instance of item, if changed
                 if (dateMap.containsKey(key)) {
                     dateMap.remove(key);
                 }
 
-                DateModel dateModel = new DateModel(timeLong, title.getText().toString(), newCalendar.getTime());
+                DateModel dateModel = new DateModel(title.getText().toString(), dateLong);
                 dateMap.put(calendarKey, dateModel);
 
                 storage.storeMapData(dateMap);
@@ -159,14 +154,14 @@ public class EditDateActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == DATE_REQUEST_CODE) {
+        if (requestCode == SetDateActivity.REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 currentlySelectedDate = SetDateActivity.getCalendarFromResultIntent(data);
                 dateView.setText(Constants.HUMAN_READABLE_DATE.format(currentlySelectedDate.getTime()));
             }
         }
 
-        if (requestCode == TIME_REQUEST_CODE) {
+        if (requestCode == SetTimeActivity.REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 currentlySelectedTime = SetTimeActivity.getTimeFromResultIntent(data).getTime();
                 timeView.setText(Constants.HUMAN_READABLE_TIME.format(currentlySelectedTime));
