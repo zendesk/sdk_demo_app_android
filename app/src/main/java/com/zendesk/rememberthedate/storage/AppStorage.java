@@ -35,7 +35,7 @@ public class AppStorage {
 
     public AppStorage(Context context) {
         this.storage = context.getSharedPreferences(REMEMBER_THE_DATE_STORE, Context.MODE_PRIVATE);
-        this.gson = new GsonBuilder().setDateFormat(Constants.ISO8601_DATE_PATTERN).create();
+        this.gson = new Gson();
     }
 
     public void storeUserProfile(UserProfile user) {
