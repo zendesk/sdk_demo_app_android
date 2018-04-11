@@ -1,22 +1,26 @@
 package com.zendesk.rememberthedate.model;
 
-import android.text.format.Time;
+import java.util.Date;
 
 public class DateModel {
 
-    private String title;
-    private Time time;
+    private final String title;
+    private final long dateInMillis;
 
-    public DateModel(String title, Time time){
+    public DateModel(String title, long dateInMillis ) {
         this.title = title;
-        this.time = time;
+        this.dateInMillis = dateInMillis;
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return title;
     }
 
-    public Time getTime(){
-        return time;
+    public long getDateInMillis(){
+        return dateInMillis;
+    }
+
+    public Date getDate() {
+        return new Date(dateInMillis);
     }
 }

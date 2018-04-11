@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.squareup.picasso.Picasso;
 import com.zendesk.logger.Logger;
 import com.zendesk.rememberthedate.storage.AppStorage;
 import com.zopim.android.sdk.api.ZopimChat;
@@ -19,9 +20,9 @@ public class Global extends Application {
 
     private AppStorage storage;
 
-    public static AppStorage getStorage(@Nullable Context context){
+    public static AppStorage getStorage(@Nullable Context context) {
         if (context != null && context.getApplicationContext() instanceof Global) {
-            return ((Global)context.getApplicationContext()).storage;
+            return ((Global) context.getApplicationContext()).storage;
         }
 
         throw new IllegalArgumentException("Can't find global Application");
@@ -32,6 +33,7 @@ public class Global extends Application {
         super.onCreate();
         storage = new AppStorage(this);
 
+        Picasso.with(this).setLoggingEnabled(true);
         // Enable logging in Support and Chat SDK
         Logger.setLoggable(true);
 

@@ -20,7 +20,7 @@ public class LocalNotification extends BroadcastReceiver {
         final String channelId = context.getResources().getString(R.string.app_name);
 
         final Notification notification = new NotificationCompat.Builder(context, channelId)
-                .setContentTitle(context.getString(R.string.push_date_title))
+                .setContentTitle(context.getString(R.string.app_name))
                 .setSmallIcon(R.drawable.ic_date_24dp)
                 .setContentText(message)
                 .setContentIntent(pendingIntent)

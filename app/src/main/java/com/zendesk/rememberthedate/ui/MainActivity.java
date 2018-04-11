@@ -1,5 +1,6 @@
 package com.zendesk.rememberthedate.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +12,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.zendesk.rememberthedate.Global;
 import com.zendesk.rememberthedate.R;
@@ -24,8 +27,8 @@ import com.zopim.android.sdk.model.VisitorInfo;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int POS_DATE_LIST = 0;
-    public static final int POS_PROFILE = 1;
+    private static final int POS_DATE_LIST = 0;
+    private static final int POS_PROFILE = 1;
     public static final int POS_HELP = 2;
 
     public static final String EXTRA_VIEWPAGER_POSITION = "extra_viewpager_pos";
@@ -47,9 +50,10 @@ public class MainActivity extends AppCompatActivity {
         initialiseChatSdk();
 
         final SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        viewPager.addOnPageChangeListener(new FabPageChangeListener(this, fab));
+        viewPager.addOnPageChangeListener(new PageChangeListener(this, fab));
         viewPager.setAdapter(sectionsPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
+
 
         final int viewPagerPos = getIntent().getIntExtra(EXTRA_VIEWPAGER_POSITION, POS_DATE_LIST);
         viewPager.setCurrentItem(viewPagerPos);
@@ -128,12 +132,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private static class FabPageChangeListener implements ViewPager.OnPageChangeListener {
+    private static class PageChangeListener implements ViewPager.OnPageChangeListener {
 
-        private final Context context;
+        private final Activity context;
         private final FloatingActionButton fab;
 
-        private FabPageChangeListener(Context context, FloatingActionButton fab) {
+        private PageChangeListener(Activity context, FloatingActionButton fab) {
             this.context = context;
             this.fab = fab;
             configureFabForDateList();
@@ -148,32 +152,20 @@ public class MainActivity extends AppCompatActivity {
         public void onPageSelected(int position) {
             switch (position) {
 
-                case POS_DATE_LIST: {
+                case POS_DATE_LIST:
                     configureFabForDateList();
                     break;
-                }
 
-                case POS_PROFILE: {
-                    configureFabForProfile();
-                    break;
-                }
-
-                default: {
+                default:
                     fab.hide();
                     break;
-                }
+
             }
         }
 
         private void configureFabForDateList() {
             fab.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_add_light));
-            fab.setOnClickListener(view -> CreateDateActivity.start(context));
-            fab.show();
-        }
-
-        private void configureFabForProfile() {
-            fab.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_edit_light));
-            fab.setOnClickListener(view -> CreateProfileActivity.start(context));
+            fab.setOnClickListener(view -> EditDateActivity.start(context));
             fab.show();
         }
 
@@ -182,5 +174,4 @@ public class MainActivity extends AppCompatActivity {
             // Intentionally empty
         }
     }
-
 }

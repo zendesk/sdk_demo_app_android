@@ -21,12 +21,13 @@ import java.util.Locale;
 
 
 class ImageUtils {
-
     static void loadProfilePicture(Context context, Uri uri, ImageView imageView) {
+        int diameter = context.getResources().getDimensionPixelSize(R.dimen.image_diameter);
         Picasso.with(context)
                 .load(uri)
-                .fit()
-                .transform(RoundedTransformation.get(context, R.dimen.image_radius))
+                .resize(diameter, diameter)
+                .centerCrop()
+                .transform(new RoundedTransformation(diameter / 2))
                 .into(imageView);
     }
 

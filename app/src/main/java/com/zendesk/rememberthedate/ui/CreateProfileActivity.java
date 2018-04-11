@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -34,14 +36,17 @@ import static com.zendesk.rememberthedate.Global.getStorage;
 
 public class CreateProfileActivity extends AppCompatActivity {
 
-    static void start(Context context) {
-        context.startActivity(new Intent(context, CreateProfileActivity.class));
-    }
 
     private AppStorage storage;
     private Uri uri;
     private ImageView imageView;
     private EditText emailText, nameText;
+
+    private boolean isProfileSettable;
+
+    static void start(Context context) {
+        context.startActivity(new Intent(context, CreateProfileActivity.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +57,42 @@ public class CreateProfileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        imageView = findViewById(R.id.imageButton);
-        nameText = findViewById(R.id.nameText);
-        emailText =findViewById(R.id.emailText);
-
+        bindViews();
         storage = getStorage(getApplicationContext());
         uri = storage.getUserProfile().getUri();
+    }
+
+    private void bindViews() {
+        imageView = findViewById(R.id.imageButton);
+        imageView.setOnLongClickListener(v -> {
+            if (imageView.getDrawable() != null) {
+            }
+            return true;
+        });
+        nameText = findViewById(R.id.nameText);
+
+        emailText = findViewById(R.id.emailText);
+        emailText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    isProfileSettable = false;
+                    invalidateOptionsMenu();
+                } else {
+                    isProfileSettable = true;
+                    invalidateOptionsMenu();
+                }
+            }
+        });
     }
 
     @Override
@@ -69,12 +104,10 @@ public class CreateProfileActivity extends AppCompatActivity {
     private void showStoredProfile() {
         UserProfile userProfile = storage.getUserProfile();
 
-        imageView.setOnClickListener(v -> {
-            Belvedere.from(getApplicationContext())
-                    .document()
-                    .contentType("image/*").allowMultiple(false)
-                    .open(CreateProfileActivity.this);
-        });
+        imageView.setOnClickListener(v -> Belvedere.from(getApplicationContext())
+                .document()
+                .contentType("image/*").allowMultiple(false)
+                .open(CreateProfileActivity.this));
 
         if (userProfile.getUri() != null) {
             ImageUtils.loadProfilePicture(getApplicationContext(), userProfile.getUri(), imageView);
@@ -105,34 +138,52 @@ public class CreateProfileActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_create_profile, menu);
+        getMenuInflater().inflate(R.menu.profile_menu, menu);
+        MenuItem saveItem = menu.findItem(R.id.action_edit);
+        saveItem.setIcon(getResources().getDrawable(R.drawable.ic_save));
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_edit);
+        if (isProfileSettable) {
+            item.setIcon(getResources().getDrawable(R.drawable.ic_save));
+            item.setEnabled(true);
+        } else {
+            item.setIcon(getResources().getDrawable(R.drawable.ic_save_diasbled));
+            item.setEnabled(false);
 
-        } else if (item.getItemId() == R.id.action_save) {
-
-            final String email = emailText.getText().toString();
-            final String name = nameText.getText().toString();
-
-            if (StringUtils.hasLength(email)) {
-
-                final UserProfile user = new UserProfile(name, email, uri);
-                storage.storeUserProfile(user);
-                updateIdentityInSdks(user);
-                finish();
-
-            } else {
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.fragment_profile_invalid_email), Toast.LENGTH_LONG).show();
-            }
-            return true;
+            Toast.makeText(getApplicationContext(),
+                    getResources().getString(R.string.fragment_profile_invalid_email),
+                    Toast.LENGTH_LONG)
+                    .show();
         }
-        return super.onOptionsItemSelected(item);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            case R.id.action_edit:
+                final String email = emailText.getText().toString();
+                final String name = nameText.getText().toString();
+
+                if (isProfileSettable) {
+                    final UserProfile user = new UserProfile(name, email, uri);
+                    storage.storeUserProfile(user);
+                    updateIdentityInSdks(user);
+                    finish();
+                }
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void updateIdentityInSdks(UserProfile user) {
