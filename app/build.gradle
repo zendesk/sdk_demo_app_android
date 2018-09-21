@@ -61,8 +61,9 @@ dependencies {
     implementation group: 'com.google.android.gms', name: 'play-services-gcm', version: '12.0.1'
     implementation group: 'com.google.firebase', name: 'firebase-messaging', version: '12.0.1'
 
-    implementation group: 'com.zopim.android', name: 'sdk', version: '1.4.0'
-    implementation group: 'com.zendesk', name: 'support', version: '2.1.1'
+    api group: 'com.zopim.android', name: 'sdk', version: '1.4.0'
+    api group: 'com.zendesk', name: 'support', version: '2.2.1'
+    api group: 'com.zendesk', name: 'answerbot', version: '1.0.0-EAP1'
 }
 
 apply plugin: 'com.google.gms.google-services'

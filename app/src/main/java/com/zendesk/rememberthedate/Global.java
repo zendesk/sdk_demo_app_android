@@ -11,6 +11,7 @@ import com.zopim.android.sdk.api.ZopimChat;
 
 import javax.annotation.Nullable;
 
+import zendesk.answerbot.AnswerBot;
 import zendesk.core.Zendesk;
 import zendesk.support.Support;
 
@@ -51,6 +52,9 @@ public class Global extends Application {
             Log.w(LOG_TAG, "==============================================================================================================");
         }
         ZopimChat.init(getString(R.string.zopim_account_id));
+
+        // Init Answer Bot SDK
+        AnswerBot.INSTANCE.init(Zendesk.INSTANCE, Support.INSTANCE);
     }
 
 }

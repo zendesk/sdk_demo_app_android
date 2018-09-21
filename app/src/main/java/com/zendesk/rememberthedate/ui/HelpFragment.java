@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.zendesk.rememberthedate.BuildConfig;
 import com.zendesk.rememberthedate.R;
@@ -23,9 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import zendesk.answerbot.AnswerBotActivity;
+import zendesk.commonui.UiConfig;
 import zendesk.core.Zendesk;
 import zendesk.support.CustomField;
-import zendesk.support.UiConfig;
 import zendesk.support.guide.HelpCenterActivity;
 import zendesk.support.request.RequestActivity;
 import zendesk.support.requestlist.RequestListActivity;
@@ -42,8 +42,6 @@ public class HelpFragment extends Fragment {
     private static final long TICKET_FIELD_APP_VERSION = 24328555L;
     private static final long TICKET_FIELD_DEVICE_FREE_SPACE = 24274009L;
 
-    private Button helpCenter, contactUs, requestList, chat;
-
     public static HelpFragment newInstance() {
         return new HelpFragment();
     }
@@ -52,23 +50,13 @@ public class HelpFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
-        helpCenter = view.findViewById(R.id.fragment_main_btn_knowledge_base);
-        contactUs = view.findViewById(R.id.fragment_main_btn_contact_us);
-        requestList = view.findViewById(R.id.fragment_main_btn_my_tickets);
-        chat = view.findViewById(R.id.fragment_main_btn_chat);
+        final Context context = getContext();
+        view.findViewById(R.id.fragment_main_btn_knowledge_base).setOnClickListener(new LoggedInClickListener(v -> openHelpCenter(context)));
+        view.findViewById(R.id.fragment_main_btn_contact_us).setOnClickListener(new LoggedInClickListener(v -> openRequest(context)));
+        view.findViewById(R.id.fragment_main_btn_my_tickets).setOnClickListener(new LoggedInClickListener(v -> openRequestList(context)));
+        view.findViewById(R.id.fragment_main_btn_chat).setOnClickListener(new LoggedInClickListener(v -> openChat(context)));
+        view.findViewById(R.id.fragment_main_btn_answer_bot).setOnClickListener(new LoggedInClickListener(v -> openAnswerBot(context)));
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        final Context context = getActivity();
-        if (context != null) {
-            helpCenter.setOnClickListener(new LoggedInClickListener(v -> openHelpCenter(context)));
-            contactUs.setOnClickListener(new LoggedInClickListener(v -> openRequest(context)));
-            requestList.setOnClickListener(new LoggedInClickListener(v -> openRequestList(context)));
-            chat.setOnClickListener(new LoggedInClickListener(v -> openChat(context)));
-        }
     }
 
     private void openHelpCenter(Context context) {
@@ -108,6 +96,10 @@ public class HelpFragment extends Fragment {
                 .department("The date");
 
         ZopimChatActivity.startActivity(context, department);
+    }
+
+    private void openAnswerBot(Context context) {
+        AnswerBotActivity.builder().show(context);
     }
 
     private List<CustomField> getCustomFields() {
