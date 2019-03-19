@@ -14,15 +14,16 @@ cache:
 android:
   components:
   - tools
-  - android-26
+  - android-28
   - platform-tools
-  - build-tools-26.0.2
+  - build-tools-28.0.3
   - extra-android-m2repository
   - extra-google-m2repository
   - extra-google-google_play_services
   licenses:
-  - android-sdk-license-[0-9a-f]{8}
-  - android-sdk-preview-license-[0-9a-f]{8}
+  - android-sdk-preview-license-.+
+  - android-sdk-license-.+
+  - ".+"
 script: ./scripts/buildApp.sh
 before_deploy:
    - openssl aes-256-cbc -K $encrypted_218b70c0d15d_key -iv $encrypted_218b70c0d15d_iv -in scripts/rtd.jks.enc -out scripts/rtd.jks -d

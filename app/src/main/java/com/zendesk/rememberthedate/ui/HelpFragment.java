@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import zendesk.commonui.UiConfig;
 import zendesk.core.Zendesk;
 import zendesk.support.CustomField;
-import zendesk.support.UiConfig;
 import zendesk.support.guide.HelpCenterActivity;
 import zendesk.support.request.RequestActivity;
 import zendesk.support.requestlist.RequestListActivity;

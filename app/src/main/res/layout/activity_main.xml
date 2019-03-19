@@ -15,8 +15,10 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:tabTextColor="@color/zs_color_white"
+            app:tabIndicatorColor="@color/colorAccent"
+            app:tabRippleColor="@color/colorPrimaryDark"
+            android:background="@color/colorPrimary"
             app:tabMode="fixed" />
 
     </android.support.design.widget.AppBarLayout>
