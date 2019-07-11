@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import zendesk.answerbot.AnswerBotActivity;
 import zendesk.commonui.UiConfig;
 import zendesk.core.Zendesk;
 import zendesk.support.CustomField;
@@ -42,7 +43,7 @@ public class HelpFragment extends Fragment {
     private static final long TICKET_FIELD_APP_VERSION = 24328555L;
     private static final long TICKET_FIELD_DEVICE_FREE_SPACE = 24274009L;
 
-    private Button helpCenter, contactUs, requestList, chat;
+    private Button helpCenter, contactUs, requestList, chat, answerBot;
 
     public static HelpFragment newInstance() {
         return new HelpFragment();
@@ -56,6 +57,7 @@ public class HelpFragment extends Fragment {
         contactUs = view.findViewById(R.id.fragment_main_btn_contact_us);
         requestList = view.findViewById(R.id.fragment_main_btn_my_tickets);
         chat = view.findViewById(R.id.fragment_main_btn_chat);
+        answerBot = view.findViewById(R.id.fragment_main_btn_answer_bot);
         return view;
     }
 
@@ -68,6 +70,7 @@ public class HelpFragment extends Fragment {
             contactUs.setOnClickListener(new LoggedInClickListener(v -> openRequest(context)));
             requestList.setOnClickListener(new LoggedInClickListener(v -> openRequestList(context)));
             chat.setOnClickListener(new LoggedInClickListener(v -> openChat(context)));
+            answerBot.setOnClickListener(new LoggedInClickListener(v -> openAnswerBot(context)));
         }
     }
 
@@ -108,6 +111,11 @@ public class HelpFragment extends Fragment {
                 .department("The date");
 
         ZopimChatActivity.startActivity(context, department);
+    }
+
+    private void openAnswerBot(Context context) {
+        AnswerBotActivity.builder()
+                .show(context);
     }
 
     private List<CustomField> getCustomFields() {
