@@ -2,6 +2,7 @@ package com.zendesk.rememberthedate;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.squareup.picasso.Picasso;
@@ -9,8 +10,7 @@ import com.zendesk.logger.Logger;
 import com.zendesk.rememberthedate.storage.AppStorage;
 import com.zopim.android.sdk.api.ZopimChat;
 
-import javax.annotation.Nullable;
-
+import zendesk.answerbot.AnswerBot;
 import zendesk.core.Zendesk;
 import zendesk.support.Support;
 
@@ -42,7 +42,7 @@ public class Global extends Application {
                 getResources().getString(R.string.zd_appid),
                 getResources().getString(R.string.zd_oauth));
         Support.INSTANCE.init(Zendesk.INSTANCE);
-
+        AnswerBot.INSTANCE.init(Zendesk.INSTANCE, Support.INSTANCE);
 
         // Init Chat SDK
         if ("replace_me_chat_account_id".equals(getString(R.string.zopim_account_id))) {
