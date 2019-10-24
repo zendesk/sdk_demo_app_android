@@ -1,17 +1,13 @@
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in /Users/eduardofonseca/sdk/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the proguardFiles
-# directive in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Keep classes which may be lost by Proguard or R8 when using Answer Bot
 
-# Add any project specific keep options here:
+-keep class zendesk.core.AuthenticationRequestWrapper { *; }
+-keep class zendesk.core.PushRegistrationRequestWrapper { *; }
+-keep class zendesk.core.PushRegistrationRequest { *; }
+-keep class zendesk.core.PushRegistrationResponse { *; }
+-keep class zendesk.core.ApiAnonymousIdentity { *; }
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+-keep class zendesk.support.CreateRequestWrapper { *; }
+-keep class zendesk.support.Comment { *; }
+
+-keep class zendesk.answerbot.Deflection { *; }
+-keep class zendesk.answerbot.AnswerBotSettings { *; }
