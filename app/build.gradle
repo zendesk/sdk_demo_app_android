@@ -62,7 +62,7 @@ dependencies {
     implementation group: 'com.google.firebase', name: 'firebase-messaging', version: '17.5.0'
 
     implementation group: 'com.zopim.android', name: 'sdk', version: '1.4.7'
-    implementation group: 'com.zendesk', name: 'support', version: '3.0.2'
+    implementation group: 'com.zendesk', name: 'support', version: '3.0.3'
     implementation group: 'com.zendesk', name: 'answerbot', version: '1.0.1'
 }
 
