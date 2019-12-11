@@ -38,7 +38,7 @@ deploy:
   skip_cleanup: true
   provider: releases
   api_key:
-    secure: MNBI+eK7Aa4BCucvmxzzVlm/Tc4fyqdjv1iu5IqtjJc4vFUE3LvjBJ9d/lsQD89eavj8STMyONhbQ2+6JL6EKrfhulwwMVd5N//daLO9KA/xfEpIZO9z9RvP5VdqTDDTYrJ52HrB/MC+v5AqxxZUfk7XVjxRmAvefGWhVtlZ8CY=
+    secure: $zdGithubDeployKey
   file:
     - ./app/build/outputs/apk/debug/app-debug.apk
     - ./app/build/outputs/apk/release/app-release.apk
