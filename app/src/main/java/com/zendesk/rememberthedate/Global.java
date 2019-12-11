@@ -5,9 +5,12 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.squareup.picasso.Picasso;
 import com.zendesk.logger.Logger;
 import com.zendesk.rememberthedate.storage.AppStorage;
+import com.zendesk.util.StringUtils;
 import com.zopim.android.sdk.api.ZopimChat;
 
 import zendesk.answerbot.AnswerBot;
@@ -31,6 +34,9 @@ public class Global extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        initialiseFcm();
+
         storage = new AppStorage(this);
 
         Picasso.with(this).setLoggingEnabled(true);
@@ -51,6 +57,23 @@ public class Global extends Application {
             Log.w(LOG_TAG, "==============================================================================================================");
         }
         ZopimChat.init(getString(R.string.zopim_account_id));
+    }
+
+    private void initialiseFcm() {
+        String googleApiKey = getString(R.string.google_api_key);
+        String fcmApplicationId = getString(R.string.fcm_application_id);
+
+        if (StringUtils.isEmpty(googleApiKey) || StringUtils.isEmpty(fcmApplicationId)) {
+            Log.w(LOG_TAG, "============================================================================================================");
+            Log.w(LOG_TAG, "Google API key and FCM application ID are not configured. If you wish to use push notifications, please add ");
+            Log.w(LOG_TAG, "values for 'zdGoogleApiKey' and 'zdFcmApplicationId' to your 'gradle.properties'.");
+            Log.w(LOG_TAG, "============================================================================================================");
+        } else {
+            FirebaseApp.initializeApp(this, new FirebaseOptions.Builder()
+                    .setApiKey(googleApiKey)
+                    .setApplicationId(fcmApplicationId)
+                    .build());
+        }
     }
 
 }
