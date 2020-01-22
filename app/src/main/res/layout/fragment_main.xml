@@ -52,14 +52,6 @@
 
             android:text="@string/fragment_main_btn_chat"/>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/fragment_main_btn_answer_bot"
-            style="@style/Widget.AppCompat.Button.Colored"
-
-            android:text="@string/fragment_main_btn_answer_bot"/>
-
     </LinearLayout>
 
 </ScrollView>

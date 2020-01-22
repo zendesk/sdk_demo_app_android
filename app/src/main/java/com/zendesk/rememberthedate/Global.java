@@ -2,7 +2,7 @@ package com.zendesk.rememberthedate;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.google.firebase.FirebaseApp;
