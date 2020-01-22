@@ -7,7 +7,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -18,6 +21,8 @@ import com.zendesk.util.StringUtils;
 import zendesk.core.Zendesk;
 import zendesk.support.Support;
 import zendesk.support.request.RequestActivity;
+
+import static com.zendesk.rememberthedate.Global.LOG_TAG;
 
 public class ZendeskFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -35,6 +40,13 @@ public class ZendeskFirebaseMessagingService extends FirebaseMessagingService {
         if (StringUtils.hasLengthMany(requestId, message)) {
             handleZendeskSdkPush(requestId, message);
         }
+    }
+
+    @Override
+    public void onNewToken(@NonNull String s) {
+        super.onNewToken(s);
+        Log.d(LOG_TAG, "Firebase token updated");
+        PushUtils.registerWithZendesk();
     }
 
     private void handleZendeskSdkPush(String requestId, String message) {
