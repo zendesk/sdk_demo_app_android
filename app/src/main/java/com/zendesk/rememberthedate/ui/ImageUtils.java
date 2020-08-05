@@ -10,7 +10,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.net.Uri;
-import android.support.annotation.DimenRes;
+import androidx.annotation.DimenRes;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;

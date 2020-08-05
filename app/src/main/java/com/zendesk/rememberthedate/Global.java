@@ -2,7 +2,7 @@ package com.zendesk.rememberthedate;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.google.firebase.FirebaseApp;
@@ -11,10 +11,11 @@ import com.squareup.picasso.Picasso;
 import com.zendesk.logger.Logger;
 import com.zendesk.rememberthedate.storage.AppStorage;
 import com.zendesk.util.StringUtils;
-import com.zopim.android.sdk.api.ZopimChat;
 
 import zendesk.answerbot.AnswerBot;
+import zendesk.chat.Chat;
 import zendesk.core.Zendesk;
+import zendesk.support.Guide;
 import zendesk.support.Support;
 
 public class Global extends Application {
@@ -48,15 +49,15 @@ public class Global extends Application {
                 getResources().getString(R.string.zd_appid),
                 getResources().getString(R.string.zd_oauth));
         Support.INSTANCE.init(Zendesk.INSTANCE);
-        AnswerBot.INSTANCE.init(Zendesk.INSTANCE, Support.INSTANCE);
+        AnswerBot.INSTANCE.init(Zendesk.INSTANCE, Guide.INSTANCE);
 
         // Init Chat SDK
         if ("replace_me_chat_account_id".equals(getString(R.string.zopim_account_id))) {
-            Log.w(LOG_TAG, "==============================================================================================================");
-            Log.w(LOG_TAG, "Zopim chat is not connected to an account, if you wish to try chat please add your Zopim accountId to 'zd.xml'");
-            Log.w(LOG_TAG, "==============================================================================================================");
+            Log.w(LOG_TAG, "=========================================================================================================================");
+            Log.w(LOG_TAG, "Zendesk chat is not connected to an account, if you wish to try chat please add your Zendesk Chat account key to 'zd.xml'");
+            Log.w(LOG_TAG, "=========================================================================================================================");
         }
-        ZopimChat.init(getString(R.string.zopim_account_id));
+        Chat.INSTANCE.init(this, getString(R.string.zopim_account_id));
     }
 
     private void initialiseFcm() {

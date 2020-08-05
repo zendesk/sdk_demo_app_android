@@ -5,25 +5,26 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.zendesk.rememberthedate.BuildConfig;
 import com.zendesk.rememberthedate.R;
 import com.zendesk.util.FileUtils;
-import com.zopim.android.sdk.api.ZopimChat;
-import com.zopim.android.sdk.prechat.PreChatForm;
-import com.zopim.android.sdk.prechat.ZopimChatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import zendesk.answerbot.AnswerBotEngine;
+import zendesk.chat.ChatConfiguration;
+import zendesk.chat.ChatEngine;
+import zendesk.chat.PreChatFormFieldStatus;
 import zendesk.configurations.Configuration;
 import zendesk.core.Zendesk;
 import zendesk.messaging.MessagingActivity;
@@ -94,23 +95,20 @@ public class HelpFragment extends Fragment {
 
     private void openMessaging(Context context) {
         MessagingActivity.builder()
-                .withEngines(AnswerBotEngine.engine(), SupportEngine.engine())
+                .withEngines(AnswerBotEngine.engine(), SupportEngine.engine(), ChatEngine.engine())
                 .show(context);
     }
 
     private void openChat(Context context) {
-        PreChatForm build = new PreChatForm.Builder()
-                .name(PreChatForm.Field.REQUIRED)
-                .email(PreChatForm.Field.REQUIRED)
-                .phoneNumber(PreChatForm.Field.OPTIONAL)
-                .message(PreChatForm.Field.OPTIONAL)
+        ChatConfiguration chatConfiguration = ChatConfiguration.builder()
+                .withNameFieldStatus(PreChatFormFieldStatus.REQUIRED)
+                .withEmailFieldStatus(PreChatFormFieldStatus.REQUIRED)
+                .withPhoneFieldStatus(PreChatFormFieldStatus.OPTIONAL)
                 .build();
 
-        ZopimChat.SessionConfig department = new ZopimChat.SessionConfig()
-                .preChatForm(build)
-                .department("The date");
-
-        ZopimChatActivity.startActivity(context, department);
+        MessagingActivity.builder()
+                .withEngines(ChatEngine.engine())
+                .show(context, chatConfiguration);
     }
 
     private List<CustomField> getCustomFields() {
