@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -15,19 +13,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.zendesk.rememberthedate.R;
 import com.zendesk.rememberthedate.model.UserProfile;
 import com.zendesk.rememberthedate.push.PushUtils;
 import com.zendesk.rememberthedate.storage.AppStorage;
 import com.zendesk.util.StringUtils;
-import com.zopim.android.sdk.api.ZopimChat;
-import com.zopim.android.sdk.model.VisitorInfo;
 
 import java.util.List;
 
 import zendesk.belvedere.Belvedere;
 import zendesk.belvedere.Callback;
 import zendesk.belvedere.MediaResult;
+import zendesk.chat.Chat;
+import zendesk.chat.Providers;
+import zendesk.chat.VisitorInfo;
 import zendesk.core.JwtIdentity;
 import zendesk.core.Zendesk;
 
@@ -195,13 +197,16 @@ public class CreateProfileActivity extends AppCompatActivity {
         PushUtils.registerWithZendesk();
 
         // Init Chat SDK with an identity
-        final VisitorInfo.Builder build = new VisitorInfo.Builder()
-                .email(user.getEmail());
+        final VisitorInfo.Builder build = VisitorInfo.builder()
+                .withEmail(user.getEmail());
 
         if (StringUtils.hasLength(user.getName())) {
-            build.name(user.getName());
+            build.withName(user.getName());
         }
 
-        ZopimChat.setVisitorInfo(build.build());
+        Providers providers = Chat.INSTANCE.providers();
+        if (providers != null) {
+            providers.profileProvider().setVisitorInfo(build.build(), null);
+        }
     }
 }

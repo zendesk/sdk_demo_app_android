@@ -1,19 +1,18 @@
 package com.zendesk.rememberthedate.ui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.zendesk.rememberthedate.Global;
 import com.zendesk.rememberthedate.R;
@@ -21,8 +20,9 @@ import com.zendesk.rememberthedate.model.UserProfile;
 import com.zendesk.rememberthedate.push.PushUtils;
 import com.zendesk.rememberthedate.storage.AppStorage;
 import com.zendesk.util.StringUtils;
-import com.zopim.android.sdk.api.ZopimChat;
-import com.zopim.android.sdk.model.VisitorInfo;
+
+import zendesk.chat.Chat;
+import zendesk.chat.VisitorInfo;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -76,21 +76,21 @@ public class MainActivity extends AppCompatActivity {
         final UserProfile profile = storage.getUserProfile();
         if (StringUtils.hasLength(profile.getEmail())) {
             // Init Zopim Visitor info
-            final VisitorInfo.Builder build = new VisitorInfo.Builder()
-                    .email(profile.getEmail());
+            final VisitorInfo.Builder build = VisitorInfo.builder()
+                    .withEmail(profile.getEmail());
 
             if (StringUtils.hasLength(profile.getName())) {
-                build.name(profile.getName());
+                build.withName(profile.getName());
             }
 
-            ZopimChat.setVisitorInfo(build.build());
+            Chat.INSTANCE.providers().profileProvider().setVisitorInfo(build.build(), null);
         }
     }
 
     private static class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
 
         @Override
